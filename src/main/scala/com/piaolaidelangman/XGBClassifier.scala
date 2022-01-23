@@ -1,29 +1,9 @@
-/*
- * Copyright 2016 The BigDL Authors.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
 package xgboostsparksgx
 
 // import com.intel.analytics.bigdl.dllib.utils.Engine
 
-import ml.dmlc.xgboost4j.scala.spark.{XGBoostClassificationModel, XGBoostHelper, XGBoostClassifier}
-import org.apache.spark.ml.DefaultParamsWriterWrapper
-import org.apache.spark.ml.adapter.SchemaUtils
+import ml.dmlc.xgboost4j.scala.spark.{XGBoostClassificationModel, XGBoostClassifier}
 import org.apache.spark.ml.feature.VectorAssembler
-import org.apache.spark.ml.param.{DoubleParam, ParamMap}
-import org.apache.spark.ml.util.{Identifiable, MLReadable, MLReader}
 import org.apache.spark.sql.functions._
 import org.apache.spark.sql.{DataFrame, Dataset}
 import org.apache.spark.sql.types._
@@ -110,7 +90,7 @@ class XGBClassifier (val xgboostParams: Map[String, Any] = Map()) {
  *
  * @param model trained XGBoostClassificationModel to use in prediction.
  */
-class XGBClassifierModel private[bigdl](
+class XGBClassifierModel (
   val model: XGBoostClassificationModel) {
   private var featuresCols: Array[String] = null
   private var predictionCol: String = null
@@ -156,9 +136,13 @@ class XGBClassifierModel private[bigdl](
 }
 
 object XGBClassifierModel {
-  def load(path: String, numClass: Int): XGBClassifierModel = {
-    new XGBClassifierModel(XGBoostHelper.load(path, numClass))
-  }
+  // val modelPath = getClass.getResource("/model/0.82/model").getPath
+  //   val model = XGBoostClassificationModel.read.load(modelPath)
+  // def load(path: String, numClass: Int): XGBClassifierModel = {
+  //   // new XGBClassifierModel(XGBoostHelper.load(path, numClass))
+  //   new XGBClassifierModel(XGBoostClassificationModel.read.load(modelPath))
+
+  // }
 
   def load(path: String): XGBClassifierModel = {
     new XGBClassifierModel(XGBoostClassificationModel.load(path))
