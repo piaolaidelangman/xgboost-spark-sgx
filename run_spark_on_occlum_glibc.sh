@@ -68,7 +68,7 @@ build_spark() {
 
     # Prepare xgboost-spark-sgx
     mkdir -p image/bin/jars
-    cp -f /optxgboost-spark-sgx/target/xgboostsparksgx-1.0-SNAPSHOT-jar-with-dependencies.jar image/bin/jars
+    cp -f /opt/xgboostsparksgx-1.0-SNAPSHOT-jar-with-dependencies.jar image/bin/jars
     occlum build
 }
 
@@ -90,7 +90,7 @@ run_spark_pi() {
 run_spark_xgboost_train() {
     init_instance spark
     build_spark
-    echo -e "${BLUE}occlum run BigDL spark tpch${NC}"
+    echo -e "occlum run xgboost spark "
     occlum run /usr/lib/jvm/java-11-openjdk-amd64/bin/java \
                 -XX:-UseCompressedOops -XX:MaxMetaspaceSize=256m \
                 -XX:ActiveProcessorCount=4 \
@@ -116,6 +116,7 @@ run_spark_xgboost_train() {
                 --conf spark.speculation=false \
                 --conf spark.executor.heartbeatInterval=10000000 \
                 --conf spark.executor.instances=2 \
+                --conf spark.task.cpus=4 \
                 --executor-cores 8 \
                 --total-executor-cores 16 \
                 --executor-memory 1G \
@@ -123,7 +124,7 @@ run_spark_xgboost_train() {
                 --verbose \
                 /bin/jars/xgboostsparksgx-1.0-SNAPSHOT-jar-with-dependencies.jar \
                 /host/data 4 100 /host/data/model
-                $* | tee spark.local.sgx.log
+
 }
 
 id=$([ -f "$pid" ] && echo $(wc -l < "$pid") || echo "0")
