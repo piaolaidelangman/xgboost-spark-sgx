@@ -24,7 +24,7 @@ object xgbClassifierTrainingExample {
     val modelsave_path = args(3) // save model to this path
     val num_classes = args(4).toInt
 
-    val DecimalType = DataTypes.createDecimalType(1, 33)
+    val DecimalType = DataTypes.createDecimalType(33, 33)
     val schema = new StructType(Array(
       StructField("label", StringType, false),
       StructField("integer feature 1", IntegerType, false),
