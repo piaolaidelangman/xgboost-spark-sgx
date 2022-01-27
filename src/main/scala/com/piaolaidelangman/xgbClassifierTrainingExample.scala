@@ -21,6 +21,7 @@ object xgbClassifierTrainingExample {
     val num_threads = args(1).toInt
     val num_round = args(2).toInt
     val modelsave_path = args(3) // save model to this path
+    val num_classes = args(4).toInt
 
     val schema = new StructType(Array(
       StructField("label", StringType, false),
@@ -86,7 +87,7 @@ object xgbClassifierTrainingExample {
     val xgbClassifier = new XGBClassifier(xgbParam)
     xgbClassifier.setFeaturesCol("features")
     xgbClassifier.setLabelCol("classIndex")
-    xgbClassifier.setNumClass(39)
+    xgbClassifier.setNumClass(num_classes)
     xgbClassifier.setMaxDepth(2)
     xgbClassifier.setNumWorkers(1)
     xgbClassifier.setNthread(num_threads)
