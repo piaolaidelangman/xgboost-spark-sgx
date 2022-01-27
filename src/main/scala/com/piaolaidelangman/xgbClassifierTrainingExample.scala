@@ -69,8 +69,8 @@ object xgbClassifierTrainingExample {
     var df = spark.read.option("delimiter", "\t").schema(schema).csv(input_path)
     df.show()
 
-    df = df.columns.map(x=>col(x).isNotNull).reduce(_ && _)
-    df.show()
+    val filterCond = df.columns.map(x=>col(x).isNotNull).reduce(_ && _)
+    df.filter(filterCond).show()
 
     // val stringIndexer = new StringIndexer()
     //   .setInputCol("label")
