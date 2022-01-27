@@ -5,7 +5,7 @@ import ml.dmlc.xgboost4j.scala.spark.TrackerConf
 import org.apache.spark.ml.feature.{StringIndexer, VectorAssembler}
 import org.apache.spark.sql.{SparkSession}
 import org.apache.spark.SparkContext
-import org.apache.spark.sql.types.{IntegerType, DoubleType, StringType, StructField, StructType, BinaryType, ArrayType, DecimalType}
+import org.apache.spark.sql.types.{IntegerType, DoubleType, StringType, StructField, StructType, BinaryType, ArrayType, DecimalType, FloatType}
 import org.apache.spark.sql.functions.col
 
 object xgbClassifierTrainingExample {
@@ -39,32 +39,32 @@ object xgbClassifierTrainingExample {
       StructField("iF 11", IntegerType, false),
       StructField("iF 12", IntegerType, false),
       StructField("iF 13", IntegerType, false),
-      StructField("categorical feature 1", DecimalType, false),
-      StructField("cf 2", DecimalType, false),
-      StructField("cf 3", DecimalType, false),
-      StructField("cf 4", DecimalType, false),
-      StructField("cf 5", DecimalType, false),
-      StructField("cf 6", DecimalType, false),
-      StructField("cf 7", DecimalType, false),
-      StructField("cf 8", DecimalType, false),
-      StructField("cf 9", DecimalType, false),
-      StructField("cf 10", DecimalType, false),
-      StructField("cf 11", DecimalType, false),
-      StructField("cf 12", DecimalType, false),
-      StructField("cf 13", DecimalType, false),
-      StructField("cf 14", DecimalType, false),
-      StructField("cf 15", DecimalType, false),
-      StructField("cf 16", DecimalType, false),
-      StructField("cf 17", DecimalType, false),
-      StructField("cf 18", DecimalType, false),
-      StructField("cf 19", DecimalType, false),
-      StructField("cf 20", DecimalType, false),
-      StructField("cf 21", DecimalType, false),
-      StructField("cf 22", DecimalType, false),
-      StructField("cf 23", DecimalType, false),
-      StructField("cf 24", DecimalType, false),
-      StructField("cf 25", DecimalType, false),
-      StructField("cf 26", DecimalType, false)
+      StructField("categorical feature 1", FloatType, false),
+      StructField("cf 2", FloatType, false),
+      StructField("cf 3", FloatType, false),
+      StructField("cf 4", FloatType, false),
+      StructField("cf 5", FloatType, false),
+      StructField("cf 6", FloatType, false),
+      StructField("cf 7", FloatType, false),
+      StructField("cf 8", FloatType, false),
+      StructField("cf 9", FloatType, false),
+      StructField("cf 10", FloatType, false),
+      StructField("cf 11", FloatType, false),
+      StructField("cf 12", FloatType, false),
+      StructField("cf 13", FloatType, false),
+      StructField("cf 14", FloatType, false),
+      StructField("cf 15", FloatType, false),
+      StructField("cf 16", FloatType, false),
+      StructField("cf 17", FloatType, false),
+      StructField("cf 18", FloatType, false),
+      StructField("cf 19", FloatType, false),
+      StructField("cf 20", FloatType, false),
+      StructField("cf 21", FloatType, false),
+      StructField("cf 22", FloatType, false),
+      StructField("cf 23", FloatType, false),
+      StructField("cf 24", FloatType, false),
+      StructField("cf 25", FloatType, false),
+      StructField("cf 26", FloatType, false)
     ))
     var df = spark.read.option("delimiter", "\t").schema(schema).csv(input_path)
     df.show()
