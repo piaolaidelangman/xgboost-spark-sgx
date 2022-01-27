@@ -64,7 +64,7 @@ object xgbClassifierTrainingExample {
       StructField("cf 25", StringType, false),
       StructField("cf 26", StringType, false)
     ))
-    val df = spark.read.schema(schema).csv(input_path)
+    val df = spark.read.option("delimiter", "\t").schema(schema).csv(input_path)
 
     val stringIndexer = new StringIndexer()
       .setInputCol("label")
