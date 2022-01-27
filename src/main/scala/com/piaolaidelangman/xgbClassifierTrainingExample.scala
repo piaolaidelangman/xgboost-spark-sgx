@@ -5,7 +5,7 @@ import ml.dmlc.xgboost4j.scala.spark.TrackerConf
 import org.apache.spark.ml.feature.{StringIndexer, VectorAssembler}
 import org.apache.spark.sql.{SparkSession}
 import org.apache.spark.SparkContext
-import org.apache.spark.sql.types.{IntegerType, DoubleType, StringType, StructField, StructType, BinaryType, ArrayType, DecimalType, FloatType, LongType, ByteType}
+import org.apache.spark.sql.types.{IntegerType, DoubleType, StringType, StructField, StructType, BinaryType, ArrayType, FloatType, LongType, ByteType, DataTypes}
 import org.apache.spark.sql.functions.col
 
 object xgbClassifierTrainingExample {
@@ -24,6 +24,7 @@ object xgbClassifierTrainingExample {
     val modelsave_path = args(3) // save model to this path
     val num_classes = args(4).toInt
 
+    val DecimalType = DataTypes.createDecimalType(1, 33)
     val schema = new StructType(Array(
       StructField("label", StringType, false),
       StructField("integer feature 1", IntegerType, false),
