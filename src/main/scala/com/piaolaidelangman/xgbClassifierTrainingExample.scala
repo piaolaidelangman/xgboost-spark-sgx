@@ -5,7 +5,7 @@ import ml.dmlc.xgboost4j.scala.spark.TrackerConf
 import org.apache.spark.ml.feature.{StringIndexer, VectorAssembler}
 import org.apache.spark.sql.{SparkSession}
 import org.apache.spark.SparkContext
-import org.apache.spark.sql.types.{IntegerType, DoubleType, StringType, StructField, StructType}
+import org.apache.spark.sql.types.{IntegerType, DoubleType, StringType, StructField, StructType, BinaryType, ArrayType, DecimalType}
 
 object xgbClassifierTrainingExample {
   def main(args: Array[String]): Unit = {
@@ -37,32 +37,32 @@ object xgbClassifierTrainingExample {
       StructField("iF 11", IntegerType, false),
       StructField("iF 12", IntegerType, false),
       StructField("iF 13", IntegerType, false),
-      StructField("categorical feature 1", StringType, false),
-      StructField("cf 2", StringType, false),
-      StructField("cf 3", StringType, false),
-      StructField("cf 4", StringType, false),
-      StructField("cf 5", StringType, false),
-      StructField("cf 6", StringType, false),
-      StructField("cf 7", StringType, false),
-      StructField("cf 8", StringType, false),
-      StructField("cf 9", StringType, false),
-      StructField("cf 10", StringType, false),
-      StructField("cf 11", StringType, false),
-      StructField("cf 12", StringType, false),
-      StructField("cf 13", StringType, false),
-      StructField("cf 14", StringType, false),
-      StructField("cf 15", StringType, false),
-      StructField("cf 16", StringType, false),
-      StructField("cf 17", StringType, false),
-      StructField("cf 18", StringType, false),
-      StructField("cf 19", StringType, false),
-      StructField("cf 20", StringType, false),
-      StructField("cf 21", StringType, false),
-      StructField("cf 22", StringType, false),
-      StructField("cf 23", StringType, false),
-      StructField("cf 24", StringType, false),
-      StructField("cf 25", StringType, false),
-      StructField("cf 26", StringType, false)
+      StructField("categorical feature 1", DoubleType, false),
+      StructField("cf 2", DoubleType, false),
+      StructField("cf 3", DoubleType, false),
+      StructField("cf 4", DoubleType, false),
+      StructField("cf 5", DoubleType, false),
+      StructField("cf 6", DoubleType, false),
+      StructField("cf 7", DoubleType, false),
+      StructField("cf 8", DoubleType, false),
+      StructField("cf 9", DoubleType, false),
+      StructField("cf 10", DoubleType, false),
+      StructField("cf 11", DoubleType, false),
+      StructField("cf 12", DoubleType, false),
+      StructField("cf 13", DoubleType, false),
+      StructField("cf 14", DoubleType, false),
+      StructField("cf 15", DoubleType, false),
+      StructField("cf 16", DoubleType, false),
+      StructField("cf 17", DoubleType, false),
+      StructField("cf 18", DoubleType, false),
+      StructField("cf 19", DoubleType, false),
+      StructField("cf 20", DoubleType, false),
+      StructField("cf 21", DoubleType, false),
+      StructField("cf 22", DoubleType, false),
+      StructField("cf 23", DoubleType, false),
+      StructField("cf 24", DoubleType, false),
+      StructField("cf 25", DoubleType, false),
+      StructField("cf 26", DoubleType, false)
     ))
     val df = spark.read.option("delimiter", "\t").schema(schema).csv(input_path)
 
