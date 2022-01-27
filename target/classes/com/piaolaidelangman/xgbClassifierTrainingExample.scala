@@ -6,6 +6,7 @@ import org.apache.spark.ml.feature.{StringIndexer, VectorAssembler}
 import org.apache.spark.sql.{SparkSession}
 import org.apache.spark.SparkContext
 import org.apache.spark.sql.types.{IntegerType, DoubleType, StringType, StructField, StructType, BinaryType, ArrayType, DecimalType}
+import org.apache.spark.sql.functions.col
 
 object xgbClassifierTrainingExample {
   def main(args: Array[String]): Unit = {
@@ -67,7 +68,7 @@ object xgbClassifierTrainingExample {
     ))
     var df = spark.read.option("delimiter", "\t").schema(schema).csv(input_path)
     df.show()
-    
+
     df = df.columns.map(x=>col(x).isNotNull).reduce(_ && _)
     df.show()
 
