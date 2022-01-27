@@ -5,7 +5,7 @@ import ml.dmlc.xgboost4j.scala.spark.TrackerConf
 import org.apache.spark.ml.feature.{StringIndexer, VectorAssembler}
 import org.apache.spark.sql.{SparkSession}
 import org.apache.spark.SparkContext
-import org.apache.spark.sql.types.{DoubleType, StringType, StructField, StructType}
+import org.apache.spark.sql.types.{IntegerType, DoubleType, StringType, StructField, StructType}
 
 object xgbClassifierTrainingExample {
   def main(args: Array[String]): Unit = {
@@ -23,24 +23,60 @@ object xgbClassifierTrainingExample {
     val modelsave_path = args(3) // save model to this path
 
     val schema = new StructType(Array(
-      StructField("sepal length", DoubleType, true),
-      StructField("sepal width", DoubleType, true),
-      StructField("petal length", DoubleType, true),
-      StructField("petal width", DoubleType, true),
-      StructField("class", StringType, true)))
+      StructField("label", StringType, false),
+      StructField("integer feature 1", IntegerType, false),
+      StructField("iF 2", IntegerType, false),
+      StructField("iF 3", IntegerType, false),
+      StructField("iF 4", IntegerType, false),
+      StructField("iF 5", IntegerType, false),
+      StructField("iF 6", IntegerType, false),
+      StructField("iF 7", IntegerType, false),
+      StructField("iF 8", IntegerType, false),
+      StructField("iF 9", IntegerType, false),
+      StructField("iF 10", IntegerType, false),
+      StructField("iF 11", IntegerType, false),
+      StructField("iF 12", IntegerType, false),
+      StructField("iF 13", IntegerType, false),
+      StructField("categorical feature 1", StringType, false),
+      StructField("cf 2", StringType, false),
+      StructField("cf 3", StringType, false),
+      StructField("cf 4", StringType, false),
+      StructField("cf 5", StringType, false),
+      StructField("cf 6", StringType, false),
+      StructField("cf 7", StringType, false),
+      StructField("cf 8", StringType, false),
+      StructField("cf 9", StringType, false),
+      StructField("cf 10", StringType, false),
+      StructField("cf 11", StringType, false),
+      StructField("cf 12", StringType, false),
+      StructField("cf 13", StringType, false),
+      StructField("cf 14", StringType, false),
+      StructField("cf 15", StringType, false),
+      StructField("cf 16", StringType, false),
+      StructField("cf 17", StringType, false),
+      StructField("cf 18", StringType, false),
+      StructField("cf 19", StringType, false),
+      StructField("cf 20", StringType, false),
+      StructField("cf 21", StringType, false),
+      StructField("cf 22", StringType, false),
+      StructField("cf 23", StringType, false),
+      StructField("cf 24", StringType, false),
+      StructField("cf 25", StringType, false),
+      StructField("cf 26", StringType, false)
+    ))
     val df = spark.read.schema(schema).csv(input_path)
 
     val stringIndexer = new StringIndexer()
-      .setInputCol("class")
+      .setInputCol("label")
       .setOutputCol("classIndex")
       .fit(df)
-    val labelTransformed = stringIndexer.transform(df).drop("class")
+    val labelTransformed = stringIndexer.transform(df).drop("label")
     // compose all feature columns as vector
     val vectorAssembler = new VectorAssembler().
-      setInputCols(Array("sepal length", "sepal width", "petal length", "petal width")).
+      setInputCols(Array("integer feature 1", "IF 2", "IF 3", "IF 4", "IF 5", "IF 6", "IF 7", "IF 8", "IF 9", "IF 10", "IF 11", "IF 12", "IF 13", "categorical feature 1", "cf 2",
+       "cf 3", "cf 4", "cf 5", "cf 6", "cf 7", "cf 8", "cf 9", "cf 10", "cf 11", "cf 12", "cf 13", "cf 14", "cf 15", "cf 16", "cf 17", "cf 18", "cf 19", "cf 20", "cf 21", "cf 22", "cf 23", "cf 24", "cf 25", "cf 26")).
       setOutputCol("features")
-    val xgbInput = vectorAssembler.transform(labelTransformed).select("features",
-      "classIndex")
+    val xgbInput = vectorAssembler.transform(labelTransformed).select("features","classIndex")
 
     val Array(train, eval1, eval2, test) = xgbInput.randomSplit(Array(0.6, 0.2, 0.1, 0.1))
 
@@ -50,7 +86,7 @@ object xgbClassifierTrainingExample {
     val xgbClassifier = new XGBClassifier(xgbParam)
     xgbClassifier.setFeaturesCol("features")
     xgbClassifier.setLabelCol("classIndex")
-    xgbClassifier.setNumClass(3)
+    xgbClassifier.setNumClass(39)
     xgbClassifier.setMaxDepth(2)
     xgbClassifier.setNumWorkers(1)
     xgbClassifier.setNthread(num_threads)
