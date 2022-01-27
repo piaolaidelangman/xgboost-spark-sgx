@@ -67,37 +67,39 @@ object xgbClassifierTrainingExample {
     ))
     val df = spark.read.option("delimiter", "\t").schema(schema).csv(input_path)
 
-    val stringIndexer = new StringIndexer()
-      .setInputCol("label")
-      .setOutputCol("classIndex")
-      .fit(df)
-    val labelTransformed = stringIndexer.transform(df).drop("label")
-    // compose all feature columns as vector
-    val vectorAssembler = new VectorAssembler().
-      setInputCols(Array("integer feature 1", "iF 2", "iF 3", "iF 4", "iF 5", "iF 6", "iF 7", "iF 8", "iF 9", "iF 10", "iF 11", "iF 12", "iF 13", "categorical feature 1", "cf 2",
-       "cf 3", "cf 4", "cf 5", "cf 6", "cf 7", "cf 8", "cf 9", "cf 10", "cf 11", "cf 12", "cf 13", "cf 14", "cf 15", "cf 16", "cf 17", "cf 18", "cf 19", "cf 20", "cf 21", "cf 22", "cf 23", "cf 24", "cf 25", "cf 26")).
-      setOutputCol("features")
-    val xgbInput = vectorAssembler.transform(labelTransformed).select("features","classIndex")
+    df.show()
 
-    val Array(train, eval1, eval2, test) = xgbInput.randomSplit(Array(0.6, 0.2, 0.1, 0.1))
+    // val stringIndexer = new StringIndexer()
+    //   .setInputCol("label")
+    //   .setOutputCol("classIndex")
+    //   .fit(df)
+    // val labelTransformed = stringIndexer.transform(df).drop("label")
+    // // compose all feature columns as vector
+    // val vectorAssembler = new VectorAssembler().
+    //   setInputCols(Array("integer feature 1", "iF 2", "iF 3", "iF 4", "iF 5", "iF 6", "iF 7", "iF 8", "iF 9", "iF 10", "iF 11", "iF 12", "iF 13", "categorical feature 1", "cf 2",
+    //    "cf 3", "cf 4", "cf 5", "cf 6", "cf 7", "cf 8", "cf 9", "cf 10", "cf 11", "cf 12", "cf 13", "cf 14", "cf 15", "cf 16", "cf 17", "cf 18", "cf 19", "cf 20", "cf 21", "cf 22", "cf 23", "cf 24", "cf 25", "cf 26")).
+    //   setOutputCol("features")
+    // val xgbInput = vectorAssembler.transform(labelTransformed).select("features","classIndex")
 
-    val xgbParam = Map("tracker_conf" -> TrackerConf(60*60, "scala"),
-      "eval_sets" -> Map("eval1" -> eval1, "eval2" -> eval2))
+    // val Array(train, eval1, eval2, test) = xgbInput.randomSplit(Array(0.6, 0.2, 0.1, 0.1))
 
-    val xgbClassifier = new XGBClassifier(xgbParam)
-    xgbClassifier.setFeaturesCol("features")
-    xgbClassifier.setLabelCol("classIndex")
-    xgbClassifier.setNumClass(num_classes)
-    xgbClassifier.setMaxDepth(2)
-    xgbClassifier.setNumWorkers(1)
-    xgbClassifier.setNthread(num_threads)
-    xgbClassifier.setNumRound(num_round)
-    xgbClassifier.setTreeMethod("auto")
-    xgbClassifier.setObjective("multi:softprob")
-    xgbClassifier.setTimeoutRequestWorkers(180000L)
+    // val xgbParam = Map("tracker_conf" -> TrackerConf(60*60, "scala"),
+    //   "eval_sets" -> Map("eval1" -> eval1, "eval2" -> eval2))
 
-    val xgbClassificationModel = xgbClassifier.fit(train)
-    xgbClassificationModel.save(modelsave_path)
+    // val xgbClassifier = new XGBClassifier(xgbParam)
+    // xgbClassifier.setFeaturesCol("features")
+    // xgbClassifier.setLabelCol("classIndex")
+    // xgbClassifier.setNumClass(num_classes)
+    // xgbClassifier.setMaxDepth(2)
+    // xgbClassifier.setNumWorkers(1)
+    // xgbClassifier.setNthread(num_threads)
+    // xgbClassifier.setNumRound(num_round)
+    // xgbClassifier.setTreeMethod("auto")
+    // xgbClassifier.setObjective("multi:softprob")
+    // xgbClassifier.setTimeoutRequestWorkers(180000L)
+
+    // val xgbClassificationModel = xgbClassifier.fit(train)
+    // xgbClassificationModel.save(modelsave_path)
 
     sc.stop()
   }
