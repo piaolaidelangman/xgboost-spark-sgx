@@ -8,15 +8,7 @@ import org.apache.spark.SparkContext
 import org.apache.spark.sql.types.{IntegerType, DoubleType, StringType, StructField, StructType, BinaryType, ArrayType, FloatType, LongType, ByteType, DataTypes}
 import org.apache.spark.sql.functions.{col, udf}
 
-class Task extends Serializable{
-  def rowToLibsvm(row: Row): String = {
-    0 until row.length flatMap {
-      case 0 => Some(row(0).toString)
-      case i if row(i) == null => None
-      case i => Some( (if (i < 14) row(i) else java.lang.Long.parseLong(row(i).toString, 16)).toString )
-    } mkString " "
-  }
-}
+
 
 
 object xgbClassifierTrainingExample {
@@ -86,8 +78,8 @@ object xgbClassifierTrainingExample {
     var df = spark.read.option("header", "false").option("inferSchema", "true").option("delimiter", "\t").csv(input_path)
     df.show()
 
-    df.rdd.map(task.rowToLibsvm)
-    df.show()
+    df.map(task.rowToLibsvm).show()
+    // df.show()
   
     // df.show()
 
