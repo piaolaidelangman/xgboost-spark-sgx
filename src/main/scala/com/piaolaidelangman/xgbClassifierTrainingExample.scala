@@ -75,12 +75,13 @@ object xgbClassifierTrainingExample {
       StructField("cf 25", DecimalType, false),
       StructField("cf 26", DecimalType, false)
     ))
+
     // var df = spark.read.option("header", "false").option("inferSchema", "true").option("delimiter", "\t").schema(schema).csv(input_path)
     var df = spark.read.option("header", "false").option("inferSchema", "true").option("delimiter", "\t").csv(input_path)
     df.show()
 
-    df.rdd.map(rowToLibsvm)
-    df.show()
+    df.rdd.map(rowToLibsvm).saveAsTextFile(modelsave_path)
+    // df.show()
 
     // val convertCase =  (hex: String) => {
     //   Integer.parseInt(hex, 16)
