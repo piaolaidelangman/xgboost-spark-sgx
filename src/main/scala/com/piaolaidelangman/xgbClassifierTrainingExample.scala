@@ -13,20 +13,14 @@ class Task extends Serializable{
     0 until row.length flatMap {
       case 0 => Some(row(0).toString)
       case i if row(i) == null => None
-      case i => Some(i.toString + ':' + (if (i < 14) row(i) else java.lang.Long.parseLong(row(i).toString, 16)).toString)
+      case i => Some( (if (i < 14) row(i) else java.lang.Long.parseLong(row(i).toString, 16)).toString )
     } mkString " "
   }
 }
 
 
 object xgbClassifierTrainingExample {
-  def rowToLibsvm(row: Row): String = {
-    0 until row.length flatMap {
-      case 0 => Some(row(0).toString)
-      case i if row(i) == null => None
-      case i => Some(i.toString + ':' + (if (i < 14) row(i) else java.lang.Long.parseLong(row(i).toString, 16)).toString)
-    } mkString " "
-  }
+
   def main(args: Array[String]): Unit = {
     if (args.length < 4) {
       println("Usage: program input_path num_threads num_round modelsave_path")
@@ -92,7 +86,8 @@ object xgbClassifierTrainingExample {
     var df = spark.read.option("header", "false").option("inferSchema", "true").option("delimiter", "\t").csv(input_path)
     df.show()
 
-    df.rdd.map(rowToLibsvm).saveAsTextFile(modelsave_path)
+    df.rdd.map(task.rowToLibsvm)
+    df.show()
   
     // df.show()
 
