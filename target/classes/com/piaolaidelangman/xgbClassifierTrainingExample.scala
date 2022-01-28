@@ -107,7 +107,7 @@ object xgbClassifierTrainingExample {
     xgbClassifier.setLabelCol("classIndex")
     xgbClassifier.setNumClass(num_classes)
     xgbClassifier.setMaxDepth(2)
-    xgbClassifier.setNumWorkers(1)
+    xgbClassifier.setNumWorkers(3)
     xgbClassifier.setNthread(num_threads)
     xgbClassifier.setNumRound(num_round)
     xgbClassifier.setTreeMethod("auto")
