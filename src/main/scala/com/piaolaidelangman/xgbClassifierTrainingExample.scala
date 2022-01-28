@@ -79,7 +79,8 @@ object xgbClassifierTrainingExample {
     var df = spark.read.option("header", "false").option("inferSchema", "true").option("delimiter", "\t").csv(input_path)
     df.show()
 
-    df.rdd.map(rowToLibsvm).show()
+    df.rdd.map(rowToLibsvm)
+    df.show()
 
     // val convertCase =  (hex: String) => {
     //   Integer.parseInt(hex, 16)
