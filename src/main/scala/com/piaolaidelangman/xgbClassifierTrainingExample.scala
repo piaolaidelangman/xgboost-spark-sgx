@@ -75,7 +75,7 @@ object xgbClassifierTrainingExample {
     ))
 
     // var df = spark.read.option("header", "false").option("inferSchema", "true").option("delimiter", "\t").schema(schema).csv(input_path)
-    var df = spark.read.option("header", "false").option("inferSchema", "true").option("delimiter", "\t").csv(input_path)
+    var df = spark.read.option("header", "false").option("inferSchema", "true").option("delimiter", " ").csv(input_path)
     df.show()
 
     // val stringIndexer = new StringIndexer()
