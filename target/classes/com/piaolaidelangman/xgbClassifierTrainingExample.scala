@@ -74,7 +74,7 @@ object xgbClassifierTrainingExample {
       StructField("cf 26", LongType, false)
     ))
 
-    var df = spark.read.option("header", "false").option("inferSchema", "true").option("delimiter", " ").schema(schema).csv(input_path)
+    var df = spark.read.option("header", "false").option("delimiter", " ").schema(schema).csv(input_path)
     // var df = spark.read.option("header", "false").option("inferSchema", "true").option("delimiter", " ").csv(input_path)
     df.show()
 
