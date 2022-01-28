@@ -29,6 +29,7 @@ object xgbClassifierTrainingExample {
     val num_round = args(2).toInt
     val modelsave_path = args(3) // save model to this path
     val num_classes = args(4).toInt
+    val num_repartions = args(5).toInt
 
     // val DecimalType = DataTypes.createDecimalType(32, 0)
     val schema = new StructType(Array(
@@ -80,7 +81,7 @@ object xgbClassifierTrainingExample {
     df.show()
     println("success original partions")
     println(df.rdd.partitions.length)
-    df = df.repartition(32)
+    df = df.repartition(num_repartions)
     println("success After repartions")
     println(df.rdd.partitions.length)
 
