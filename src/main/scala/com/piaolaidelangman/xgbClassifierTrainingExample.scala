@@ -79,7 +79,8 @@ object xgbClassifierTrainingExample {
     df.show()
     println("success original partions")
     println(df.rdd.partitions.length)
-    df = df.repartition(num_repartions)
+    // df = df.repartition(num_repartions)
+    df = df.coalesce(num_repartions)
     println("success After repartions")
     println(df.rdd.partitions.length)
 
