@@ -6,7 +6,7 @@ import org.apache.spark.ml.feature.{StringIndexer, VectorAssembler}
 import org.apache.spark.sql.{SparkSession}
 import org.apache.spark.SparkContext
 import org.apache.spark.sql.types.{IntegerType, DoubleType, StringType, StructField, StructType, BinaryType, ArrayType, FloatType, LongType, ByteType, DataTypes}
-import org.apache.spark.sql.functions.col
+import org.apache.spark.sql.functions.{col, udf}
 
 object xgbClassifierTrainingExample {
   def main(args: Array[String]): Unit = {
@@ -67,9 +67,15 @@ object xgbClassifierTrainingExample {
       StructField("cf 25", DecimalType, false),
       StructField("cf 26", DecimalType, false)
     ))
-    var df = spark.read.option("delimiter", "\t").schema(schema).csv(input_path)
+    // var df = spark.read.option("header", "false").option("inferSchema", "true").option("delimiter", "\t").schema(schema).csv(input_path)
+    var df = spark.read.option("header", "false").option("inferSchema", "true").option("delimiter", "\t").csv(input_path)
     df.show()
 
+    val convertCase =  (hex: String) => {
+      Integer.parseInt(hex, 16)
+    }
+    val convertUDF = udf(convertCase)
+    
 
     // val stringIndexer = new StringIndexer()
     //   .setInputCol("label")
