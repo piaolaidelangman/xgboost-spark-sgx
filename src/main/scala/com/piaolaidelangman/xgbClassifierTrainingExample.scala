@@ -8,16 +8,25 @@ import org.apache.spark.SparkContext
 import org.apache.spark.sql.types.{IntegerType, DoubleType, StringType, StructField, StructType, BinaryType, ArrayType, FloatType, LongType, ByteType, DataTypes}
 import org.apache.spark.sql.functions.{col, udf}
 
-def rowToLibsvm(row: Row): String = {
+class Task extends Serializable{
+  def rowToLibsvm(row: Row): String = {
     0 until row.length flatMap {
       case 0 => Some(row(0).toString)
       case i if row(i) == null => None
       case i => Some(i.toString + ':' + (if (i < 14) row(i) else java.lang.Long.parseLong(row(i).toString, 16)).toString)
     } mkString " "
   }
+}
+
 
 object xgbClassifierTrainingExample {
-
+  def rowToLibsvm(row: Row): String = {
+    0 until row.length flatMap {
+      case 0 => Some(row(0).toString)
+      case i if row(i) == null => None
+      case i => Some(i.toString + ':' + (if (i < 14) row(i) else java.lang.Long.parseLong(row(i).toString, 16)).toString)
+    } mkString " "
+  }
   def main(args: Array[String]): Unit = {
     if (args.length < 4) {
       println("Usage: program input_path num_threads num_round modelsave_path")
@@ -25,7 +34,9 @@ object xgbClassifierTrainingExample {
     }
     val sc = new SparkContext()
     val spark = SparkSession.builder().getOrCreate()
-    // import spark.implicits._
+    import spark.implicits._
+
+    val task = new Task()
 
     val input_path = args(0) // path to iris.data
     val num_threads = args(1).toInt
@@ -81,7 +92,8 @@ object xgbClassifierTrainingExample {
     var df = spark.read.option("header", "false").option("inferSchema", "true").option("delimiter", "\t").csv(input_path)
     df.show()
 
-    df.rdd.map(rowToLibsvm).saveAsTextFile(modelsave_path)
+    df.rdd.map(task.rowToLibsvm).saveAsTextFile(modelsave_path)
+  
     // df.show()
 
     // val convertCase =  (hex: String) => {
