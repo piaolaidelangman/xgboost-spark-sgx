@@ -77,7 +77,7 @@ object xgbClassifierTrainingExample {
     val convertUDF = udf(convertCase)
     spark.udf.register("convertUDF", convertCase)
     df.createOrReplaceTempView("testTableName")
-    var convertSql = "select convertUDF("_c14") as _c14 from testTableName"
+    var convertSql = "select convertUDF(_c14) as _c14 from testTableName"
     // for(columnName <- schemaArray) {
     //     convertSql += "convertUDF("+columnName+") as "+columnName+", "
     // }
