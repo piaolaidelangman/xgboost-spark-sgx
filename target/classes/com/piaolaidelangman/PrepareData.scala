@@ -26,7 +26,9 @@ object PrepareData {
 
     var df = spark.read.option("header", "false").option("inferSchema", "true").option("delimiter", "\t").csv(input_path)
 
-    df.rdd.map(task.rowToLibsvm).saveAsTextFile(output_path)
+    // df.rdd.map(task.rowToLibsvm).saveAsTextFile(output_path)
+    df.map(task.rowToLibsvm).write.mode("overwrite").option("header",false).csv(output_path)
+
 
     spark.stop()
   }
