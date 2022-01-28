@@ -78,6 +78,11 @@ object xgbClassifierTrainingExample {
     // var df = spark.read.option("header", "false").option("inferSchema", "true").option("delimiter", " ").csv(input_path)
     // df.show(df.count.toInt, false)
     df.show()
+    println("success original partions")
+    println(df.rdd.partitions.length)
+    df = df.repartition(32)
+    println("success After repartions")
+    println(df.rdd.partitions.length)
 
 //##################
 
