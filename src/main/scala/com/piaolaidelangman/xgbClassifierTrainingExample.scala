@@ -26,10 +26,8 @@ object xgbClassifierTrainingExample {
 
     val input_path = args(0) // path to iris.data
     val num_threads = args(1).toInt
-    val num_round = args(2).toInt
-    val modelsave_path = args(3) // save model to this path
-    val num_classes = args(4).toInt
-    val num_repartions = args(5).toInt
+    val modelsave_path = args(2) // save model to this path
+    val num_repartions = args(3).toInt
 
     // val DecimalType = DataTypes.createDecimalType(32, 0)
     val schema = new StructType(Array(
@@ -108,10 +106,10 @@ object xgbClassifierTrainingExample {
     val xgbClassifier = new XGBClassifier(xgbParam)
     xgbClassifier.setFeaturesCol("features")
     xgbClassifier.setLabelCol("classIndex")
-    xgbClassifier.setNumClass(num_classes)
+    xgbClassifier.setNumClass(2)
     xgbClassifier.setMaxDepth(2)
     xgbClassifier.setNthread(num_threads)
-    xgbClassifier.setNumRound(num_round)
+    xgbClassifier.setNumRound(100)
     xgbClassifier.setTreeMethod("auto")
     xgbClassifier.setObjective("multi:softprob")
     xgbClassifier.setTimeoutRequestWorkers(180000L)
