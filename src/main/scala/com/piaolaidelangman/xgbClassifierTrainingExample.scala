@@ -3,12 +3,20 @@ package xgboostsparksgx
 import ml.dmlc.xgboost4j.scala.spark.TrackerConf
 
 import org.apache.spark.ml.feature.{StringIndexer, VectorAssembler}
-import org.apache.spark.sql.{SparkSession}
+import org.apache.spark.sql.{SparkSession, Row}
 import org.apache.spark.SparkContext
 import org.apache.spark.sql.types.{IntegerType, DoubleType, StringType, StructField, StructType, BinaryType, ArrayType, FloatType, LongType, ByteType, DataTypes}
 import org.apache.spark.sql.functions.{col, udf}
 
 object xgbClassifierTrainingExample {
+  def rowToLibsvm(row: Row): String = {
+    0 until row.length flatMap {
+      case 0 => Some(row(0).toString)
+      case i if row(i) == null => None
+      case i => Some(i.toString + ':' + (if (i < 14) row(i) else java.lang.Long.parseLong(row(i).toString, 16)).toString)
+    } mkString " "
+  }
+
   def main(args: Array[String]): Unit = {
     if (args.length < 4) {
       println("Usage: program input_path num_threads num_round modelsave_path")
@@ -71,20 +79,22 @@ object xgbClassifierTrainingExample {
     var df = spark.read.option("header", "false").option("inferSchema", "true").option("delimiter", "\t").csv(input_path)
     df.show()
 
-    val convertCase =  (hex: String) => {
-      Integer.parseInt(hex, 16)
-    }
-    val convertUDF = udf(convertCase)
-    spark.udf.register("convertUDF", convertCase)
-    df.createOrReplaceTempView("testTableName")
-    var convertSql = "select convertUDF(_c14) as _c14 from testTableName"
-    // for(columnName <- schemaArray) {
-    //     convertSql += "convertUDF("+columnName+") as "+columnName+", "
+    df.rdd.map(rowToLibsvm).show()
+
+    // val convertCase =  (hex: String) => {
+    //   Integer.parseInt(hex, 16)
     // }
-    // convertSql = convertSql.dropRight(2)
-    // convertSql += " from testTableName"
-    df = spark.sql(convertSql)
-    df.show()
+    // val convertUDF = udf(convertCase)
+    // spark.udf.register("convertUDF", convertCase)
+    // df.createOrReplaceTempView("testTableName")
+    // var convertSql = "select convertUDF(_c14) as _c14 from testTableName"
+    // // for(columnName <- schemaArray) {
+    // //     convertSql += "convertUDF("+columnName+") as "+columnName+", "
+    // // }
+    // // convertSql = convertSql.dropRight(2)
+    // // convertSql += " from testTableName"
+    // df = spark.sql(convertSql)
+    // df.show()
 
     // val stringIndexer = new StringIndexer()
     //   .setInputCol("label")
