@@ -8,14 +8,15 @@ import org.apache.spark.SparkContext
 import org.apache.spark.sql.types.{IntegerType, DoubleType, StringType, StructField, StructType, BinaryType, ArrayType, FloatType, LongType, ByteType, DataTypes}
 import org.apache.spark.sql.functions.{col, udf}
 
-object xgbClassifierTrainingExample {
-  def rowToLibsvm(row: Row): String = {
+def rowToLibsvm(row: Row): String = {
     0 until row.length flatMap {
       case 0 => Some(row(0).toString)
       case i if row(i) == null => None
       case i => Some(i.toString + ':' + (if (i < 14) row(i) else java.lang.Long.parseLong(row(i).toString, 16)).toString)
     } mkString " "
   }
+
+object xgbClassifierTrainingExample {
 
   def main(args: Array[String]): Unit = {
     if (args.length < 4) {
