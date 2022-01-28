@@ -76,7 +76,7 @@ object xgbClassifierTrainingExample {
 
     var df = spark.read.option("header", "false").option("delimiter", " ").schema(schema).csv(input_path+"/*.csv")
     // var df = spark.read.option("header", "false").option("inferSchema", "true").option("delimiter", " ").csv(input_path)
-    df.show(df.count(), false)
+    df.show(df.count, false)
 
 //##################
 
