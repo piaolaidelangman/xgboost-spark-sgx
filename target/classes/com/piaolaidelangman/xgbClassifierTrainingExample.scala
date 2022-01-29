@@ -80,10 +80,10 @@ object xgbClassifierTrainingExample {
     println("success original partions")
     println(df.rdd.partitions.length)
     // df = df.repartition(num_repartions)
-    df = df.coalesce(num_repartions)
-    df.persist()
-    println("success After repartions")
-    println(df.rdd.partitions.length)
+    // df = df.coalesce(num_repartions)
+    // df.persist()
+    // println("success After repartions")
+    // println(df.rdd.partitions.length)
 
 //##################
 
@@ -105,7 +105,8 @@ object xgbClassifierTrainingExample {
     val Array(train, eval1, eval2, test) = xgbInput.randomSplit(Array(0.6, 0.2, 0.1, 0.1))
 
     val xgbParam = Map("tracker_conf" -> TrackerConf(60*60, "scala"),
-      "eval_sets" -> Map("eval1" -> eval1, "eval2" -> eval2))
+      "eval_sets" -> Map("eval1" -> eval1, "eval2" -> eval2),
+      "missing" -> -999)
 
     val xgbClassifier = new XGBClassifier(xgbParam)
     xgbClassifier.setFeaturesCol("features")
