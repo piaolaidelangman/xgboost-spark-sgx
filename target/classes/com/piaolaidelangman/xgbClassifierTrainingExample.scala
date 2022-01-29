@@ -88,10 +88,10 @@ object xgbClassifierTrainingExample {
 //##################
 
     val stringIndexer = new StringIndexer()
-      .setInputCol("label")
+      .setInputCol("_c0")
       .setOutputCol("classIndex")
       .fit(df)
-    val labelTransformed = stringIndexer.transform(df).drop("label")
+    val labelTransformed = stringIndexer.transform(df).drop("_c0")
 
     // val vectorAssembler = new VectorAssembler().
     // setInputCols(Array("integer feature 1", "iF 2", "iF 3", "iF 4", "iF 5", "iF 6", "iF 7", "iF 8", "iF 9", "iF 10", "iF 11", "iF 12", "iF 13", "categorical feature 1", "cf 2",
