@@ -97,7 +97,7 @@ object xgbClassifierTrainingExample {
     setInputCols(Array("integer feature 1", "iF 2", "iF 3", "iF 4", "iF 5", "iF 6", "iF 7", "iF 8", "iF 9", "iF 10", "iF 11", "iF 12", "iF 13", "categorical feature 1", "cf 2",
       "cf 3", "cf 4", "cf 5", "cf 6", "cf 7", "cf 8", "cf 9", "cf 10", "cf 11", "cf 12", "cf 13", "cf 14", "cf 15", "cf 16", "cf 17", "cf 18", "cf 19", "cf 20", "cf 21", "cf 22", "cf 23", "cf 24", "cf 25", "cf 26")).
     setOutputCol("features")
-    .setHandleInvalid("skip")
+    .setHandleInvalid("keep")
 
 
     val xgbInput = vectorAssembler.transform(labelTransformed).select("features","classIndex")
