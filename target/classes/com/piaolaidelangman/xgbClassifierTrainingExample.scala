@@ -73,8 +73,8 @@ object xgbClassifierTrainingExample {
       StructField("cf 26", LongType, true)
     ))
 
-    var df = spark.read.option("header", "false").option("delimiter", " ").schema(schema).csv(input_path+"/*.csv")
-    // var df = spark.read.option("header", "false").option("inferSchema", "true").option("delimiter", " ").csv(input_path)
+    // var df = spark.read.option("header", "false").option("delimiter", " ").schema(schema).csv(input_path+"/*.csv")
+    var df = spark.read.option("header", "false").option("inferSchema", "true").option("delimiter", " ").csv(input_path)
     // df.show(df.count.toInt, false)
     df.show()
     println("success original partions")
@@ -93,11 +93,16 @@ object xgbClassifierTrainingExample {
       .fit(df)
     val labelTransformed = stringIndexer.transform(df).drop("label")
 
+    // val vectorAssembler = new VectorAssembler().
+    // setInputCols(Array("integer feature 1", "iF 2", "iF 3", "iF 4", "iF 5", "iF 6", "iF 7", "iF 8", "iF 9", "iF 10", "iF 11", "iF 12", "iF 13", "categorical feature 1", "cf 2",
+    //   "cf 3", "cf 4", "cf 5", "cf 6", "cf 7", "cf 8", "cf 9", "cf 10", "cf 11", "cf 12", "cf 13", "cf 14", "cf 15", "cf 16", "cf 17", "cf 18", "cf 19", "cf 20", "cf 21", "cf 22", "cf 23", "cf 24", "cf 25", "cf 26")).
+    // setOutputCol("features")
+    // .setHandleInvalid("keep")
     val vectorAssembler = new VectorAssembler().
-    setInputCols(Array("integer feature 1", "iF 2", "iF 3", "iF 4", "iF 5", "iF 6", "iF 7", "iF 8", "iF 9", "iF 10", "iF 11", "iF 12", "iF 13", "categorical feature 1", "cf 2",
-      "cf 3", "cf 4", "cf 5", "cf 6", "cf 7", "cf 8", "cf 9", "cf 10", "cf 11", "cf 12", "cf 13", "cf 14", "cf 15", "cf 16", "cf 17", "cf 18", "cf 19", "cf 20", "cf 21", "cf 22", "cf 23", "cf 24", "cf 25", "cf 26")).
-    setOutputCol("features")
-    .setHandleInvalid("keep")
+      setInputCols(Array( "_c1", "_c2", "_c3", "_c4", "_c5", "_c6", "_c7", "_c8", "_c9", "_c10", "_c11", "_c12", "_c13", "_c14", "_c15", "_c16", "_c17", "_c18", "_c19",
+      "_c20", "_c21", "_c22", "_c23", "_c24", "_c25", "_c26", "_c27", "_c28", "_c29", "_c30", "_c31", "_c32", "_c33", "_c34", "_c35", "_c36", "_c37", "_c38", "_c39" )).
+      setOutputCol("features")
+      .setHandleInvalid("skip")
 
 
     val xgbInput = vectorAssembler.transform(labelTransformed).select("features","classIndex")
@@ -106,7 +111,8 @@ object xgbClassifierTrainingExample {
 
     val xgbParam = Map("tracker_conf" -> TrackerConf(60*60, "scala"),
       "eval_sets" -> Map("eval1" -> eval1, "eval2" -> eval2),
-      "missing" -> -999)
+      // "missing" -> -999
+      )
 
     val xgbClassifier = new XGBClassifier(xgbParam)
     xgbClassifier.setFeaturesCol("features")
