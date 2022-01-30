@@ -25,9 +25,10 @@ object xgbClassifierTrainingExample {
     val task = new Task()
 
     val input_path = args(0) // path to iris.data
+    // val modelsave_path = args(1) // save model to this path
     val num_threads = args(1).toInt
-    val modelsave_path = args(2) // save model to this path
-    val num_repartions = args(3).toInt
+    val num_repartions = args(2).toInt
+    val num_workers = args(3).toInt
 
     // val DecimalType = DataTypes.createDecimalType(32, 0)
     val schema = new StructType(Array(
@@ -109,7 +110,7 @@ object xgbClassifierTrainingExample {
 
     val Array(train, eval1, eval2, test) = xgbInput.randomSplit(Array(0.6, 0.2, 0.1, 0.1))
 
-    val xgbParam = Map("tracker_conf" -> TrackerConf(60*60, "scala"),
+    val xgbParam = Map("tracker_conf" -> TrackerConf(60*6000, "scala"),
       "eval_sets" -> Map("eval1" -> eval1, "eval2" -> eval2),
       // "missing" -> -999
       )
@@ -118,6 +119,7 @@ object xgbClassifierTrainingExample {
     xgbClassifier.setFeaturesCol("features")
     xgbClassifier.setLabelCol("classIndex")
     xgbClassifier.setNumClass(2)
+    xgbClassifier.setNumWorkers(num_workers)
     xgbClassifier.setMaxDepth(2)
     xgbClassifier.setNthread(num_threads)
     xgbClassifier.setNumRound(100)
@@ -126,7 +128,7 @@ object xgbClassifierTrainingExample {
     xgbClassifier.setTimeoutRequestWorkers(180000L)
 
     val xgbClassificationModel = xgbClassifier.fit(train)
-    xgbClassificationModel.save(modelsave_path)
+    // xgbClassificationModel.save(modelsave_path)
 
     sc.stop()
     spark.stop()
