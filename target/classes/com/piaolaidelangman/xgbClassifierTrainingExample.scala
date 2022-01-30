@@ -14,10 +14,10 @@ import org.apache.spark.sql.functions.{col, udf}
 object xgbClassifierTrainingExample {
 
   def main(args: Array[String]): Unit = {
-    if (args.length < 4) {
-      println("Usage: program input_path num_threads num_round modelsave_path")
-      sys.exit(1)
-    }
+    // if (args.length < 4) {
+    //   println("Usage: program input_path num_threads num_round modelsave_path")
+    //   sys.exit(1)
+    // }
     val sc = new SparkContext()
     val spark = SparkSession.builder().getOrCreate()
     import spark.implicits._
