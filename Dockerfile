@@ -6,7 +6,7 @@ COPY --from=tini /opt/apache-maven-3.6.3 /opt/apache-maven-3.6.3
 RUN cd /opt && \
     git clone https://github.com/piaolaidelangman/xgboost-spark-sgx.git && \
     cd ./xgboost-spark-sgx && \
-    git pull origin test:test && git checkout test && \
+    git fetch origin pull/5/head:test && git checkout test && \
     /opt/apache-maven-3.6.3/bin/mvn clean package
 
 # Copy scripts & other files
