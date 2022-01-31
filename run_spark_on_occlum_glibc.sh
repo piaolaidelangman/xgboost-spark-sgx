@@ -68,7 +68,8 @@ build_spark() {
 
     # Prepare xgboost-spark-sgx
     mkdir -p image/bin/jars
-    cp -f /opt/xgboost-spark-sgx/target/xgboostsparksgx-1.0-SNAPSHOT-jar-with-dependencies.jar image/bin/jars
+    # cp -f /opt/xgboost-spark-sgx/target/xgboostsparksgx-1.0-SNAPSHOT-jar-with-dependencies.jar image/bin/jars
+    cp -f /opt/xgboostsparksgx-1.0-SNAPSHOT-jar-with-dependencies.jar image/bin/jars
     occlum build
 }
 
