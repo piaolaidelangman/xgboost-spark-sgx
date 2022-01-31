@@ -1,4 +1,7 @@
+sudo docker rm -f xgboost-spark-sgx
+
 sudo docker run -it \
+	--privileged \
 	--net=host \
 	--name=xgboost-spark-sgx \
 	--cpuset-cpus 10-14 \
