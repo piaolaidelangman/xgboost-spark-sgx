@@ -1,6 +1,6 @@
 FROM intelanalytics/bigdl-ppml-trusted-big-data-ml-scala-occlum:0.14.0-SNAPSHOT
 
-COPY --from=tini /opt/apache-maven-3.6.3 /opt/apache-maven-3.6.3
+COPY --from=bigdl /opt/apache-maven-3.6.3 /opt/apache-maven-3.6.3
 
 # Prepare xgboost-spark-sgx
 RUN cd /opt && \
