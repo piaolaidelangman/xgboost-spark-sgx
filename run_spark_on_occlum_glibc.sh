@@ -114,7 +114,7 @@ run_spark_xgboost_train() {
                 --executor-memory 4G \
                 --driver-memory 16G \
                 bin/jars/xgboostsparksgx-1.0-SNAPSHOT-jar-with-dependencies.jar \
-                /host/data/process_data_10g 8 1 /host/data/model
+                /host/data/ 8 1 /host/data/model
 
 }
 
