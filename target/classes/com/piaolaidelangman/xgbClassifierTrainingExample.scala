@@ -25,12 +25,10 @@ object xgbClassifierTrainingExample {
     val task = new Task()
 
     val input_path = args(0) // path to iris.data
-    // val modelsave_path = args(1) // save model to this path
     val num_threads = args(1).toInt
-    // val num_repartions = args(2).toInt
     val num_workers = args(2).toInt
+    val modelsave_path = args(3) // save model to this path
 
-    // val DecimalType = DataTypes.createDecimalType(32, 0)
     val schema = new StructType(Array(
       StructField("label", StringType, true),
       StructField("integer feature 1", IntegerType, true),
@@ -76,15 +74,6 @@ object xgbClassifierTrainingExample {
 
     // var df = spark.read.option("header", "false").option("delimiter", " ").schema(schema).csv(input_path+"/*.csv")
     var df = spark.read.option("header", "false").option("inferSchema", "true").option("delimiter", " ").csv(input_path)
-    // df.show(df.count.toInt, false)
-    // df.show()
-    // println("success original partions")
-    // println(df.rdd.partitions.length)
-    // df = df.repartition(num_repartions)
-    // df = df.coalesce(num_repartions)
-    // df.persist()
-    // println("success After repartions")
-    // println(df.rdd.partitions.length)
 
 //##################
 
@@ -128,7 +117,7 @@ object xgbClassifierTrainingExample {
     xgbClassifier.setTimeoutRequestWorkers(180000L)
 
     val xgbClassificationModel = xgbClassifier.fit(train)
-    // xgbClassificationModel.save(modelsave_path)
+    xgbClassificationModel.save(modelsave_path)
 
     sc.stop()
     spark.stop()

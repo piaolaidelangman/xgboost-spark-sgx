@@ -15,9 +15,9 @@ init_instance() {
     cd occlum_spark
     occlum init
     new_json="$(jq '.resource_limits.user_space_size = "SGX_MEM_SIZE" |
-        .resource_limits.max_num_of_threads = 256 |
-        .process.default_heap_size = "512MB" |
-        .resource_limits.kernel_space_heap_size="1024MB" |
+        .resource_limits.max_num_of_threads = 2048 |
+        .process.default_heap_size = "2048MB" |
+        .resource_limits.kernel_space_heap_size="2048MB" |
         .process.default_mmap_size = "18000MB" |
         .entry_points = [ "/usr/lib/jvm/java-11-openjdk-amd64/bin" ] |
         .env.untrusted = [ "DMLC_TRACKER_URI", "SPARK_DRIVER_URL" ] |
@@ -68,7 +68,7 @@ build_spark() {
 
     # Prepare xgboost-spark-sgx
     mkdir -p image/bin/jars
-    cp -f /opt/xgboostsparksgx-1.0-SNAPSHOT-jar-with-dependencies.jar image/bin/jars
+    cp -f /opt/xgboost-spark-sgx/target/xgboostsparksgx-1.0-SNAPSHOT-jar-with-dependencies.jar image/bin/jars
     occlum build
 }
 
@@ -98,32 +98,22 @@ run_spark_xgboost_train() {
                 -Dos.name="Linux" \
                 -cp "$SPARK_HOME/conf/:$SPARK_HOME/jars/*:/bin/jars/*" \
                 -Xmx10g org.apache.spark.deploy.SparkSubmit \
-                --master 'local[4]' \
-                --conf spark.driver.port=54321 \
-                --conf spark.driver.memory=2g \
-                --conf spark.driver.blockManager.port=10026 \
-                --conf spark.blockManager.port=10025 \
-                --conf spark.scheduler.maxRegisteredResourcesWaitingTime=5000000 \
-                --conf spark.worker.timeout=600 \
-                --conf spark.python.use.daemon=false \
-                --conf spark.python.worker.reuse=false \
+                --master local[8] \
+                --conf spark.task.cpus=8 \
+                --class xgboostsparksgx.xgbClassifierTrainingExample \
+                --conf spark.scheduler.maxRegisteredResourcesWaitingTime=50000000 \
+                --conf spark.worker.timeout=60000000 \
                 --conf spark.network.timeout=10000000 \
-                --conf spark.starvation.timeout=250000 \
-                --conf spark.rpc.askTimeout=600 \
-                --conf spark.sql.autoBroadcastJoinThreshold=-1 \
-                --conf spark.io.compression.codec=lz4 \
-                --conf spark.sql.shuffle.partitions=8 \
+                --conf spark.starvation.timeout=2500000 \
                 --conf spark.speculation=false \
                 --conf spark.executor.heartbeatInterval=10000000 \
-                --conf spark.executor.instances=2 \
-                --conf spark.task.cpus=4 \
+                --conf spark.shuffle.io.maxRetries=5 \
+                --conf spark.executor.instances=8 \
                 --executor-cores 8 \
-                --total-executor-cores 16 \
-                --executor-memory 1G \
-                --class xgboostsparksgx.xgbClassifierTrainingExample  \
-                --verbose \
-                /bin/jars/xgboostsparksgx-1.0-SNAPSHOT-jar-with-dependencies.jar \
-                /host/data 4 100 /host/data/model
+                --executor-memory 16G \
+                --driver-memory 16G \
+                bin/jars/xgboostsparksgx-1.0-SNAPSHOT-jar-with-dependencies.jar \
+                /host/data/process_data_10g 8 1 /host/data/model
 
 }
 
