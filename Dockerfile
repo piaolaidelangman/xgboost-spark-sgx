@@ -5,7 +5,9 @@ COPY --from=tini /opt/apache-maven-3.6.3 /opt/apache-maven-3.6.3
 # Prepare xgboost-spark-sgx
 RUN cd /opt && \
     git clone https://github.com/piaolaidelangman/xgboost-spark-sgx.git && \
-    cd ./xgboost-spark-sgx && /opt/apache-maven-3.6.3/bin/mvn clean package
+    cd ./xgboost-spark-sgx && \
+    git pull origin test:test && git checkout test && \
+    /opt/apache-maven-3.6.3/bin/mvn clean package
 
 # Copy scripts & other files
 ADD ./run_spark_on_occlum_glibc.sh /opt/run_spark_on_occlum_glibc.sh
