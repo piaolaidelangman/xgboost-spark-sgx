@@ -20,7 +20,7 @@ object xgbClassifierTrainingExample {
     //   sys.exit(1)
     // }
     val sc = new SparkContext()
-    val sc = new SparkContext()
+    // val sc = new SparkContext()
     val spark = SparkSession.builder().getOrCreate()
     import spark.implicits._
 
