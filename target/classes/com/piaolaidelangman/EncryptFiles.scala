@@ -3,7 +3,7 @@ package xgboostsparksgx
 import org.apache.spark.SparkContext
 
 import java.util.Base64
-import java.nio.file.{Files, Paths}
+// import java.nio.file.{Files, Paths}
 
 /**
  * @author diankun.an
@@ -22,9 +22,9 @@ object SparkEncryptFiles {
         val sc = new SparkContext()
         val task = new Task()
 
-        if(Files.exists(Paths.get(outputPath)) == false){
-          Files.createDirectory(Paths.get(outputPath))
-        }
+        // if(Files.exists(Paths.get(outputPath)) == false){
+        //   Files.createDirectory(Paths.get(outputPath))
+        // }
 
         val rdd = sc.binaryFiles(inputPath)
         .map{ case (name, bytesData) => {
