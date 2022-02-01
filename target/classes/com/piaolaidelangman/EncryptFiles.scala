@@ -31,7 +31,7 @@ object SparkEncryptFiles {
             // val tmpOutputPath = Paths.get(outputPath, name.split("/").last)
             // Files.write(tmpOutputPath, task.encryptBytesWithJavaAESCBC(bytesData.toArray, key))
             // tmpOutputPath.toString + " AES-CBC encrypt successfully saved!"
-            task.encryptBytesWithJavaAESCBC(bytesData.toArray, key)
+            new String(task.encryptBytesWithJavaAESCBC(bytesData.toArray, key))
         }}
 
         rdd.saveAsTextFile(outputPath)
