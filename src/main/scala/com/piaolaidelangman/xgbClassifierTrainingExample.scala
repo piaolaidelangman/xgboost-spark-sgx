@@ -64,7 +64,8 @@ object xgbClassifierTrainingExample {
       (for{
         i <- 0 to 39
       } yield {
-        if(i<14) row(i).toInt else row(i).toLong
+        // if(i<14) row(i).toInt else row(i).toLong
+        row(i).toInt
       }).toSeq
     ))
 
