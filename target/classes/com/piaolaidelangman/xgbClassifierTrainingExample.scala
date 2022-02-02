@@ -51,9 +51,9 @@ object xgbClassifierTrainingExample {
     decryptionRDD.take(2).foreach(println)
 
     // val rowRDD = decryptionRDD.map(_.split(" ")).map(stringArray => Row.fromSeq(stringArray))
-    val rowRDD = decryptionRDD.map(_.split(" ")).map(row => Row(row(0).toInt, row(1).toInt, row(2).toInt, row(3).toInt, row(4).toInt, row(5).toInt, row(6).toInt, row(7).toInt, row(8).toInt, row(9).toInt, row(10).toInt, row(11).toInt, row(12).toInt, row(13).toInt, 
-    row(14).toLong, row(15).toLong, row(16).toLong, row(17).toLong, row(18).toLong, row(19).toLong, row(20).toLong, row(21).toLong, row(22).toLong, row(23).toLong, row(24).toLong, row(25).toLong, row(26).toLong, row(27).toLong, row(28).toLong, row(29).toLong, row(30).toLong, row(31).toLong, 
-    row(32).toLong, row(33).toLong, row(34).toLong, row(35).toLong, row(36).toLong, row(37).toLong, row(38).toLong, row(39).toLong))
+    // val rowRDD = decryptionRDD.map(_.split(" ")).map(row => Row(row(0).toInt, row(1).toInt, row(2).toInt, row(3).toInt, row(4).toInt, row(5).toInt, row(6).toInt, row(7).toInt, row(8).toInt, row(9).toInt, row(10).toInt, row(11).toInt, row(12).toInt, row(13).toInt, 
+    // row(14).toLong, row(15).toLong, row(16).toLong, row(17).toLong, row(18).toLong, row(19).toLong, row(20).toLong, row(21).toLong, row(22).toLong, row(23).toLong, row(24).toLong, row(25).toLong, row(26).toLong, row(27).toLong, row(28).toLong, row(29).toLong, row(30).toLong, row(31).toLong, 
+    // row(32).toLong, row(33).toLong, row(34).toLong, row(35).toLong, row(36).toLong, row(37).toLong, row(38).toLong, row(39).toLong))
 
 
     val rowRDD = decryptionRDD.map(_.split(" ")).map(row => Row.fromSeq(
