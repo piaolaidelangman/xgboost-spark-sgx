@@ -133,7 +133,7 @@ object xgbClassifierTrainingExample {
 
     val xgbParam = Map("tracker_conf" -> TrackerConf(0L, "scala"),
       "eval_sets" -> Map("eval1" -> eval1, "eval2" -> eval2),
-      // "missing" -> -999
+      "missing" -> -999
       )
 
     val xgbClassifier = new XGBClassifier(xgbParam)
