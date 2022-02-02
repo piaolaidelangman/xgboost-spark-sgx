@@ -42,7 +42,7 @@ object xgbClassifierTrainingExample {
       }}
 
     val schema = new StructType(Array(
-      StructField("_c0", IntegerType, true),
+      StructField("_c0", StringType, true),
       StructField("_c1", IntegerType, true),
       StructField("_c2", IntegerType, true),
       StructField("_c3", IntegerType, true),
@@ -94,6 +94,12 @@ object xgbClassifierTrainingExample {
     // val schema = StructType(fields)
 
     val rowRDD = decryptionRDD.map(_.split(" ")).map(stringArray => Row.fromSeq(stringArray))
+    // val rowRDD = decryptionRDD.map(_.split(" ")).map(row =>
+    //   0 until row.length flatMap {
+    //   case 0 => Some(row(0).toString)
+    //   case i if row(i) == null => None
+    //   case i => Some( (if (i < 14) row(i) else java.lang.Long.parseLong(row(i).toString, 16)).toString )
+    // })
     rowRDD.take(2).foreach(println)
 
     // val sqlString = schemaString.split(",")(0) + " != '" + schemaString.split(",")(0) +"'"
@@ -127,7 +133,7 @@ object xgbClassifierTrainingExample {
 
     val xgbParam = Map("tracker_conf" -> TrackerConf(0L, "scala"),
       "eval_sets" -> Map("eval1" -> eval1, "eval2" -> eval2),
-      "missing" -> -999
+      // "missing" -> -999
       )
 
     val xgbClassifier = new XGBClassifier(xgbParam)
