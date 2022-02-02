@@ -41,7 +41,8 @@ object xgbClassifierTrainingExample {
         task.decryptBytesWithJavaAESCBC(bytesData.toArray, key)
       }}
 
-    val schema = for(i <- 0 to 39) {
+    var schema = for{
+      i <- 0 to 39
     } yield {
       // if(i<14)
       StructField("_c" + i.toString, if(i<14) IntegerType else LongType, true)
