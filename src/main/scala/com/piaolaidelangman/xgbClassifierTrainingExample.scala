@@ -49,10 +49,15 @@ object xgbClassifierTrainingExample {
     //   // else
     //   //   StructField("_c" + i.toString, LongType, true)
     // })
+    var structFieldArray = []
+    for(i <- 0 to 39){
+      structFieldArray.append(StructField("_c" + i.toString, if(i<14) IntegerType else LongType, true))
+    }
     var schema =  new StructType(
-      0 until 40 flatMap {
-        case i => StructField("_c" + i.toString, if(i<14) IntegerType else LongType, true)
-      }
+      // 0 until 40 flatMap {
+      //   case i => StructField("_c" + i.toString, if(i<14) IntegerType else LongType, true)
+      // }
+      stringArray
     )
     // val schema = new StructType(Array(
     //   StructField("_c0", IntegerType, true),
