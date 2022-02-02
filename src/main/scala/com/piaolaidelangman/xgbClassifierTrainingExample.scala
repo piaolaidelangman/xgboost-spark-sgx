@@ -87,16 +87,19 @@ object xgbClassifierTrainingExample {
     // var df = spark.read.option("header", "false").option("delimiter", " ").schema(schema).csv(input_path+"/*.csv")
     // var df = spark.read.option("header", "false").option("inferSchema", "true").option("delimiter", " ").csv(input_path)
     val decryptionRDD = decryption.flatMap(_.split("\n"))
+    decryptionRDD.take(2).show()
     // val schemaString = decryptionRDD.first()
     // val fields = schemaString.split(",")
     // .map(fieldName => StructField(fieldName, StringType, nullable = true))
     // val schema = StructType(fields)
 
     val rowRDD = decryptionRDD.map(_.split(" ")).map(stringArray => Row.fromSeq(stringArray))
+    rowRDD.take(2).show()
 
     // val sqlString = schemaString.split(",")(0) + " != '" + schemaString.split(",")(0) +"'"
     // val df = spark.createDataFrame(rowRDD,schema).filter("ds_rk != 'ds_rk'")
     val df = spark.createDataFrame(rowRDD,schema)
+    df.show()
 
 //##################
 
