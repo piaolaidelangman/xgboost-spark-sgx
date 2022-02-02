@@ -43,10 +43,10 @@ object xgbClassifierTrainingExample {
 
     val schema = for(i <- 0 to 39) {
     } yield {
-      if(i<14)
-        StructField("_c" + i.toString, IntegerType, true)
-      else
-        StructField("_c" + i.toString, LongType, true)
+      // if(i<14)
+      StructField("_c" + i.toString, if(i<14) IntegerType else LongType, true)
+      // else
+      //   StructField("_c" + i.toString, LongType, true)
     }
     // val schema = new StructType(Array(
     //   StructField("_c0", IntegerType, true),
