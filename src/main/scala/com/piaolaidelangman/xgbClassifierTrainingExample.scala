@@ -41,48 +41,55 @@ object xgbClassifierTrainingExample {
         task.decryptBytesWithJavaAESCBC(bytesData.toArray, key)
       }}
 
-    val schema = new StructType(Array(
-      StructField("_c0", IntegerType, true),
-      StructField("_c1", IntegerType, true),
-      StructField("_c2", IntegerType, true),
-      StructField("_c3", IntegerType, true),
-      StructField("_c4", IntegerType, true),
-      StructField("_c5", IntegerType, true),
-      StructField("_c6", IntegerType, true),
-      StructField("_c7", IntegerType, true),
-      StructField("_c8", IntegerType, true),
-      StructField("_c9", IntegerType, true),
-      StructField("_c10", IntegerType, true),
-      StructField("_c11", IntegerType, true),
-      StructField("_c12", IntegerType, true),
-      StructField("_c13", IntegerType, true),
-      StructField("_c14", LongType, true),
-      StructField("_c15", LongType, true),
-      StructField("_c16", LongType, true),
-      StructField("_c17", LongType, true),
-      StructField("_c18", LongType, true),
-      StructField("_c19", LongType, true),
-      StructField("_c20", LongType, true),
-      StructField("_c21", LongType, true),
-      StructField("_c22", LongType, true),
-      StructField("_c23", LongType, true),
-      StructField("_c24", LongType, true),
-      StructField("_c25", LongType, true),
-      StructField("_c26", LongType, true),
-      StructField("_c27", LongType, true),
-      StructField("_c28", LongType, true),
-      StructField("_c29", LongType, true),
-      StructField("_c30", LongType, true),
-      StructField("_c31", LongType, true),
-      StructField("_c32", LongType, true),
-      StructField("_c33", LongType, true),
-      StructField("_c34", LongType, true),
-      StructField("_c35", LongType, true),
-      StructField("_c36", LongType, true),
-      StructField("_c37", LongType, true),
-      StructField("_c38", LongType, true),
-      StructField("_c39", LongType, true)
-    ))
+    val schema = for(i <- 0 to 39) {
+    } yield {
+      if(i<14)
+        StructField("_c" + i.toString, IntegerType, true)
+      else
+        StructField("_c" + i.toString, LongType, true)
+    }
+    // val schema = new StructType(Array(
+    //   StructField("_c0", IntegerType, true),
+    //   StructField("_c1", IntegerType, true),
+    //   StructField("_c2", IntegerType, true),
+    //   StructField("_c3", IntegerType, true),
+    //   StructField("_c4", IntegerType, true),
+    //   StructField("_c5", IntegerType, true),
+    //   StructField("_c6", IntegerType, true),
+    //   StructField("_c7", IntegerType, true),
+    //   StructField("_c8", IntegerType, true),
+    //   StructField("_c9", IntegerType, true),
+    //   StructField("_c10", IntegerType, true),
+    //   StructField("_c11", IntegerType, true),
+    //   StructField("_c12", IntegerType, true),
+    //   StructField("_c13", IntegerType, true),
+    //   StructField("_c14", LongType, true),
+    //   StructField("_c15", LongType, true),
+    //   StructField("_c16", LongType, true),
+    //   StructField("_c17", LongType, true),
+    //   StructField("_c18", LongType, true),
+    //   StructField("_c19", LongType, true),
+    //   StructField("_c20", LongType, true),
+    //   StructField("_c21", LongType, true),
+    //   StructField("_c22", LongType, true),
+    //   StructField("_c23", LongType, true),
+    //   StructField("_c24", LongType, true),
+    //   StructField("_c25", LongType, true),
+    //   StructField("_c26", LongType, true),
+    //   StructField("_c27", LongType, true),
+    //   StructField("_c28", LongType, true),
+    //   StructField("_c29", LongType, true),
+    //   StructField("_c30", LongType, true),
+    //   StructField("_c31", LongType, true),
+    //   StructField("_c32", LongType, true),
+    //   StructField("_c33", LongType, true),
+    //   StructField("_c34", LongType, true),
+    //   StructField("_c35", LongType, true),
+    //   StructField("_c36", LongType, true),
+    //   StructField("_c37", LongType, true),
+    //   StructField("_c38", LongType, true),
+    //   StructField("_c39", LongType, true)
+    // ))
 
     // var df = spark.read.option("header", "false").option("delimiter", " ").schema(schema).csv(input_path+"/*.csv")
     // var df = spark.read.option("header", "false").option("inferSchema", "true").option("delimiter", " ").csv(input_path)
