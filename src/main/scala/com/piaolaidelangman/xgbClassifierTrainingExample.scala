@@ -51,7 +51,7 @@ object xgbClassifierTrainingExample {
   
     val decryptionRDD = decryption.flatMap(_.split("\n"))
 
-    val rowRDD = decryptionRDD.map(_.split(" ")).map(row => Row.fromSeq(
+    val rowRDD = decryptionRDD.map(_.split(" ")).map(row => Row(
     //   (0 until 39 flatMap {
     //   // case 0 => Some(row(0).toString)
     //   // case i if row(i) == null => None
