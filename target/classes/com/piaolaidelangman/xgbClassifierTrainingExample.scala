@@ -51,12 +51,7 @@ object xgbClassifierTrainingExample {
   
     val decryptionRDD = decryption.flatMap(_.split("\n"))
 
-    val rowRDD = decryptionRDD.map(_.split(" ")).map(row => Row(
-    //   (0 until 39 flatMap {
-    //   // case 0 => Some(row(0).toString)
-    //   // case i if row(i) == null => None
-    //   case i => Some( if (i < 14) row(i).toInt else row(i).toLong )
-    // }).toSeq
+    val rowRDD = decryptionRDD.map(_.split(" ")).map(row => Row.fromSeq(
       for{
         i <- 0 to 39
       } yield {
@@ -64,7 +59,6 @@ object xgbClassifierTrainingExample {
         row(i).toLong
       }
     ))
-
 
     val df = spark.createDataFrame(rowRDD,schema)
 
