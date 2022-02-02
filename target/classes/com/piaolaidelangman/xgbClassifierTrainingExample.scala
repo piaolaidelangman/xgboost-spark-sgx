@@ -41,14 +41,19 @@ object xgbClassifierTrainingExample {
         task.decryptBytesWithJavaAESCBC(bytesData.toArray, key)
       }}
 
-    var schema =  new StructType(for{
-      i <- 0 to 39
-    } yield {
-      // if(i<14)
-      StructField("_c" + i.toString, if(i<14) IntegerType else LongType, true)
-      // else
-      //   StructField("_c" + i.toString, LongType, true)
-    })
+    // var schema =  new StructType(for{
+    //   i <- 0 to 39
+    // } yield {
+    //   // if(i<14)
+    //   StructField("_c" + i.toString, if(i<14) IntegerType else LongType, true)
+    //   // else
+    //   //   StructField("_c" + i.toString, LongType, true)
+    // })
+    var schema =  new StructType(
+      0 until 40 flatMap {
+        case i => StructField("_c" + i.toString, if(i<14) IntegerType else LongType, true)
+      }
+    )
     // val schema = new StructType(Array(
     //   StructField("_c0", IntegerType, true),
     //   StructField("_c1", IntegerType, true),
