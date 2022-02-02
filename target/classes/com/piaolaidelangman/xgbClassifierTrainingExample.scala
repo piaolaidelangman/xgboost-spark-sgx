@@ -49,7 +49,7 @@ object xgbClassifierTrainingExample {
     //   // else
     //   //   StructField("_c" + i.toString, LongType, true)
     // })
-    var structFieldArray = []
+    var structFieldArray = Array[StructField]
     for(i <- 0 to 39){
       structFieldArray.append(StructField("_c" + i.toString, if(i<14) IntegerType else LongType, true))
     }
