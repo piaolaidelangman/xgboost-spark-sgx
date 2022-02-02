@@ -49,10 +49,6 @@ object xgbClassifierTrainingExample {
   
     val decryptionRDD = decryption.flatMap(_.split("\n"))
     decryptionRDD.take(2).foreach(println)
-    // val schemaString = decryptionRDD.first()
-    // val fields = schemaString.split(",")
-    // .map(fieldName => StructField(fieldName, StringType, nullable = true))
-    // val schema = StructType(fields)
 
     // val rowRDD = decryptionRDD.map(_.split(" ")).map(stringArray => Row.fromSeq(stringArray))
     val rowRDD = decryptionRDD.map(_.split(" ")).map(row => Row(row(0).toInt, row(1).toInt, row(2).toInt, row(3).toInt, row(4).toInt, row(5).toInt, row(6).toInt, row(7).toInt, row(8).toInt, row(9).toInt, row(10).toInt, row(11).toInt, row(12).toInt, row(13).toInt, 
@@ -60,22 +56,20 @@ object xgbClassifierTrainingExample {
     row(32).toLong, row(33).toLong, row(34).toLong, row(35).toLong, row(36).toLong, row(37).toLong, row(38).toLong, row(39).toLong))
 
 
-    // val rowRDD = decryptionRDD.map(_.split(" ")).map(row => Row(
-    // //   0 until row.length flatMap {
-    // //   // case 0 => Some(row(0).toString)
-    // //   // case i if row(i) == null => None
-    // //   case i => Some( if (i < 14) row(i).toInt else row(i).toLong )
-    // // }
-    //   for{
-    //     i <- 1 to 39
-    //   } yield {
-    //     if(i<14) row(i).toInt else row(i).toLong
-    //   }
-    // ))
-    rowRDD.take(2).foreach(println)
+    val rowRDD = decryptionRDD.map(_.split(" ")).map(row => Row.fromSeq(
+    //   0 until row.length flatMap {
+    //   // case 0 => Some(row(0).toString)
+    //   // case i if row(i) == null => None
+    //   case i => Some( if (i < 14) row(i).toInt else row(i).toLong )
+    // }
+      for{
+        i <- 1 to 39
+      } yield {
+        if(i<14) row(i).toInt else row(i).toLong
+      }
+    ))
 
-    // val sqlString = schemaString.split(",")(0) + " != '" + schemaString.split(",")(0) +"'"
-    // val df = spark.createDataFrame(rowRDD,schema).filter("ds_rk != 'ds_rk'")
+
     val df = spark.createDataFrame(rowRDD,schema)
     df.show()
 
@@ -96,11 +90,7 @@ object xgbClassifierTrainingExample {
     for(i <- 0 to 38){
       inputCols(i) = "_c" + (i+1).toString
     }
-    // val vectorAssembler = new VectorAssembler().
-    //   setInputCols(Array( "_c1", "_c2", "_c3", "_c4", "_c5", "_c6", "_c7", "_c8", "_c9", "_c10", "_c11", "_c12", "_c13", "_c14", "_c15", "_c16", "_c17", "_c18", "_c19",
-    //   "_c20", "_c21", "_c22", "_c23", "_c24", "_c25", "_c26", "_c27", "_c28", "_c29", "_c30", "_c31", "_c32", "_c33", "_c34", "_c35", "_c36", "_c37", "_c38", "_c39" )).
-    //   setOutputCol("features")
-    //   .setHandleInvalid("skip")
+
     val vectorAssembler = new VectorAssembler().
       setInputCols(inputCols).
       setOutputCol("features")
@@ -112,7 +102,6 @@ object xgbClassifierTrainingExample {
 
     val xgbParam = Map("tracker_conf" -> TrackerConf(0L, "scala"),
       "eval_sets" -> Map("eval1" -> eval1, "eval2" -> eval2),
-      // "missing" -> -999
       )
 
     val xgbClassifier = new XGBClassifier(xgbParam)
