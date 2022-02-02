@@ -22,19 +22,18 @@ object SparkEncryptFiles {
         val sc = new SparkContext()
         val task = new Task()
 
-        // if(Files.exists(Paths.get(outputPath)) == false){
-        //   Files.createDirectory(Paths.get(outputPath))
-        // }
+        if(Files.exists(Paths.get(outputPath)) == false){
+          Files.createDirectory(Paths.get(outputPath))
+        }
 
         val rdd = sc.binaryFiles(inputPath)
         .map{ case (name, bytesData) => {
-            // val tmpOutputPath = Paths.get(outputPath, name.split("/").last)
-            // Files.write(tmpOutputPath, task.encryptBytesWithJavaAESCBC(bytesData.toArray, key))
-            // tmpOutputPath.toString + " AES-CBC encrypt successfully saved!"
-            new String(task.encryptBytesWithJavaAESCBC(bytesData.toArray, key))
+            val tmpOutputPath = Paths.get(outputPath, name.split("/").last)
+            Files.write(tmpOutputPath, task.encryptBytesWithJavaAESCBC(bytesData.toArray, key))
+            tmpOutputPath.toString + " AES-CBC encrypt successfully saved!"
+            // new String(task.encryptBytesWithJavaAESCBC(bytesData.toArray, key))
         }}
-
-        rdd.saveAsTextFile(outputPath)
+        rdd.foreach(println)
 
         sc.stop()
     }
