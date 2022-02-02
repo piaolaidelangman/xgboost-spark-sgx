@@ -56,7 +56,7 @@ object xgbClassifierTrainingExample {
     // row(32).toLong, row(33).toLong, row(34).toLong, row(35).toLong, row(36).toLong, row(37).toLong, row(38).toLong, row(39).toLong))
 
 
-    val rowRDD = decryptionRDD.map(_.split(" ")).map(row => Row.fromSeq(
+    val rowRDD = decryptionRDD.map(_.split(" ")).map(row => Row(
     //   0 until row.length flatMap {
     //   // case 0 => Some(row(0).toString)
     //   // case i if row(i) == null => None
