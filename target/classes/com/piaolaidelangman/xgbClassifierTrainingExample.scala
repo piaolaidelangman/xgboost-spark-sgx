@@ -63,7 +63,7 @@ object xgbClassifierTrainingExample {
     //   case i => Some( if (i < 14) row(i).toInt else row(i).toLong )
     // }
       for{
-        i <- 1 to 39
+        i <- 0 to 39
       } yield {
         if(i<14) row(i).toInt else row(i).toLong
       }
