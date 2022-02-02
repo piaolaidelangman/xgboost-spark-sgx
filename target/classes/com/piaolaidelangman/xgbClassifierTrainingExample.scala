@@ -99,7 +99,7 @@ object xgbClassifierTrainingExample {
       0 until row.length flatMap {
       // case 0 => Some(row(0).toString)
       // case i if row(i) == null => None
-      case i => Some( (if (i < 14) row(i).toInt else row(i).toLong )
+      case i => Some( if (i < 14) row(i).toInt else row(i).toLong )
     })
     rowRDD.take(2).foreach(println)
 
