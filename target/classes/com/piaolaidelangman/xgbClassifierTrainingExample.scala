@@ -48,7 +48,6 @@ object xgbClassifierTrainingExample {
     var schema =  new StructType(structFieldArray)
   
     val decryptionRDD = decryption.flatMap(_.split("\n"))
-    decryptionRDD.take(2).foreach(println)
 
     // val rowRDD = decryptionRDD.map(_.split(" ")).map(stringArray => Row.fromSeq(stringArray))
     // val rowRDD = decryptionRDD.map(_.split(" ")).map(row => Row(row(0).toInt, row(1).toInt, row(2).toInt, row(3).toInt, row(4).toInt, row(5).toInt, row(6).toInt, row(7).toInt, row(8).toInt, row(9).toInt, row(10).toInt, row(11).toInt, row(12).toInt, row(13).toInt, 
@@ -57,16 +56,16 @@ object xgbClassifierTrainingExample {
 
 
     val rowRDD = decryptionRDD.map(_.split(" ")).map(row => Row.fromSeq(
-      (0 until 39 flatMap {
-      // case 0 => Some(row(0).toString)
-      // case i if row(i) == null => None
-      case i => Some( if (i < 14) row(i).toInt else row(i).toLong )
-    }).toSeq
-      // for{
-      //   i <- 0 to 39
-      // } yield {
-      //   if(i<14) row(i).toInt else row(i).toLong
-      // }
+    //   (0 until 39 flatMap {
+    //   // case 0 => Some(row(0).toString)
+    //   // case i if row(i) == null => None
+    //   case i => Some( if (i < 14) row(i).toInt else row(i).toLong )
+    // }).toSeq
+      (for{
+        i <- 0 to 39
+      } yield {
+        if(i<14) row(i).toInt else row(i).toLong
+      }).toSeq
     ))
 
 
