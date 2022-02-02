@@ -94,7 +94,7 @@ object xgbClassifierTrainingExample {
     // setOutputCol("features")
     // .setHandleInvalid("keep")
     var inputCols = new Array[String](39)
-    for(i <- 0 to 39){
+    for(i <- 1 to 39){
       inputCols(i) = "_c" + i.toString
     }
     // val vectorAssembler = new VectorAssembler().
