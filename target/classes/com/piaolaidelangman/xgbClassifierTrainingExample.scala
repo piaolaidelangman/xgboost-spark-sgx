@@ -57,7 +57,7 @@ object xgbClassifierTrainingExample {
       // 0 until 40 flatMap {
       //   case i => StructField("_c" + i.toString, if(i<14) IntegerType else LongType, true)
       // }
-      stringArray
+      structFieldArray
     )
     // val schema = new StructType(Array(
     //   StructField("_c0", IntegerType, true),
