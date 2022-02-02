@@ -57,11 +57,11 @@ object xgbClassifierTrainingExample {
 
 
     val rowRDD = decryptionRDD.map(_.split(" ")).map(row => Row(
-      0 until row.length flatMap {
+      (0 until row.length flatMap {
       // case 0 => Some(row(0).toString)
       // case i if row(i) == null => None
       case i => Some( if (i < 14) row(i).toInt else row(i).toLong )
-    } toSeq
+    }).toArray
       // for{
       //   i <- 0 to 39
       // } yield {
