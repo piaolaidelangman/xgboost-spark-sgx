@@ -99,8 +99,8 @@ run_spark_xgboost_train() {
                 -Dos.name="Linux" \
                 -cp "$SPARK_HOME/conf/:$SPARK_HOME/jars/*:/bin/jars/*" \
                 -Xmx64g -Xms64g org.apache.spark.deploy.SparkSubmit \
-                --master local[8] \
-                --conf spark.task.cpus=8 \
+                --master local[36] \
+                --conf spark.task.cpus=36 \
                 --class xgboostsparksgx.xgbClassifierTrainingExample \
                 --conf spark.scheduler.maxRegisteredResourcesWaitingTime=50000000 \
                 --conf spark.worker.timeout=60000000 \
@@ -109,12 +109,12 @@ run_spark_xgboost_train() {
                 --conf spark.speculation=false \
                 --conf spark.executor.heartbeatInterval=10000000 \
                 --conf spark.shuffle.io.maxRetries=5 \
-                --conf spark.executor.instances=8 \
-                --executor-cores 8 \
-                --executor-memory 8G \
+                --conf spark.executor.instances=24 \
+                --executor-cores 2 \
+                --executor-memory 2G \
                 --driver-memory 16G \
-                bin/jars/xgboostsparksgx-1.0-SNAPSHOT-jar-with-dependencies.jar \
-                /host/data/ 8 1 /host/data/model LDlxjm0y3HdGFniIGviJnMJbmFI+lt3dfIVyPJm1YSY=
+                target/xgboostsparksgx-1.0-SNAPSHOT-jar-with-dependencies.jar \
+                /host/data 24 1 /host/data/model LDlxjm0y3HdGFniIGviJnMJbmFI+lt3dfIVyPJm1YSY=
 
 }
 
