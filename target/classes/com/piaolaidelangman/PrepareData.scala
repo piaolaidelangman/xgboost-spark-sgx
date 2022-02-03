@@ -1,6 +1,5 @@
 package xgboostsparksgx
 
-import ml.dmlc.xgboost4j.scala.spark.TrackerConf
 
 // import org.apache.spark.ml.feature.{StringIndexer, VectorAssembler}
 import org.apache.spark.sql.{SparkSession, Row}
@@ -29,7 +28,6 @@ object PrepareData {
 
     // df.rdd.map(task.rowToLibsvm).saveAsTextFile(output_path)
     df.coalesce(num_repartions).map(task.rowToLibsvm).write.mode("overwrite").option("header",false).csv(output_path)
-
 
     spark.stop()
   }
