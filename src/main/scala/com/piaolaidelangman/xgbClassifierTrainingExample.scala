@@ -75,7 +75,8 @@ object xgbClassifierTrainingExample {
 
     val vectorAssembler = new VectorAssembler().
       setInputCols(inputCols).
-      setOutputCol("features")
+      setOutputCol("features").
+      setHandleInvalid("skip")
 
     val xgbInput = vectorAssembler.transform(labelTransformed).select("features","classIndex")
 
