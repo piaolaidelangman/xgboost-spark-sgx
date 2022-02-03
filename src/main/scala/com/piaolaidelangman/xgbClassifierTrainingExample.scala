@@ -43,7 +43,7 @@ object xgbClassifierTrainingExample {
     var structFieldArray = new Array[StructField](40)
     for(i <- 0 to 39){
       // structFieldArray(i) = StructField("_c" + i.toString, if(i<14) IntegerType else LongType, true)
-      structFieldArray(i) = StructField("_c" + i.toString, if(i<14) LongType else LongType, true)
+      structFieldArray(i) = StructField("_c" + i.toString, LongType, true)
 
     }
     var schema =  new StructType(structFieldArray)
@@ -74,16 +74,14 @@ object xgbClassifierTrainingExample {
 
     val vectorAssembler = new VectorAssembler().
       setInputCols(inputCols).
-      setOutputCol("features").
-      setHandleInvalid("skip")
+      setOutputCol("features")
 
     val xgbInput = vectorAssembler.transform(labelTransformed).select("features","classIndex")
 
     val Array(train, eval1, eval2, test) = xgbInput.randomSplit(Array(0.6, 0.2, 0.1, 0.1))
 
     val xgbParam = Map("tracker_conf" -> TrackerConf(0L, "scala"),
-      "eval_sets" -> Map("eval1" -> eval1, "eval2" -> eval2),
-      "missing" -> -999
+      "eval_sets" -> Map("eval1" -> eval1, "eval2" -> eval2)
       )
 
     val xgbClassifier = new XGBClassifier(xgbParam)
