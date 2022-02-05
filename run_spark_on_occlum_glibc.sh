@@ -109,13 +109,14 @@ run_spark_xgboost_train() {
                 --conf spark.speculation=false \
                 --conf spark.executor.heartbeatInterval=10000000 \
                 --conf spark.shuffle.io.maxRetries=5 \
-                --conf spark.executor.instances=16 \
-                --executor-cores 2 \
-                --executor-memory 1G \
-                --driver-memory 64G \
+                --num-executors 2 \
+                --executor-cores 16 \
+                --executor-memory 32G \
+                --driver-memory 24G \
                 target/xgboostsparksgx-1.0-SNAPSHOT-jar-with-dependencies.jar \
                 /host/data 16 1 /host/data/model LDlxjm0y3HdGFniIGviJnMJbmFI+lt3dfIVyPJm1YSY=
 
+                # --conf spark.executor.instances=16 \
 }
 
 id=$([ -f "$pid" ] && echo $(wc -l < "$pid") || echo "0")
