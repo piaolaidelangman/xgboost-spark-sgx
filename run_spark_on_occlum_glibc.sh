@@ -93,7 +93,7 @@ run_spark_xgboost_train() {
     build_spark
     echo -e "occlum run xgboost spark "
     occlum run /usr/lib/jvm/java-11-openjdk-amd64/bin/java \
-                -XX:-UseCompressedOops -XX:MaxMetaspaceSize=256m \
+                -XX:-UseCompressedOops -XX:MaxMetaspaceSize=1024m \
                 -XX:ActiveProcessorCount=4 \
                 -Divy.home="/tmp/.ivy" \
                 -Dos.name="Linux" \
@@ -109,10 +109,10 @@ run_spark_xgboost_train() {
                 --conf spark.speculation=false \
                 --conf spark.executor.heartbeatInterval=10000000 \
                 --conf spark.shuffle.io.maxRetries=5 \
-                --num-executors 2 \
+                --num-executors 1 \
                 --executor-cores 16 \
-                --executor-memory 32G \
-                --driver-memory 24G \
+                --executor-memory 48G \
+                --driver-memory 40G \
                 target/xgboostsparksgx-1.0-SNAPSHOT-jar-with-dependencies.jar \
                 /host/data 16 1 /host/data/model LDlxjm0y3HdGFniIGviJnMJbmFI+lt3dfIVyPJm1YSY=
 
