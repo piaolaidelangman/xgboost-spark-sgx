@@ -1,4 +1,4 @@
-FROM intelanalytics/bigdl-ppml-trusted-big-data-ml-scala-occlum:0.14.0-SNAPSHOT
+FROM 10.239.45.10/arda/intelanalytics/bigdl-ppml-trusted-big-data-ml-scala-occlum:0.14.0-SNAPSHOT
 
 # COPY --from=bigdl /opt/apache-maven-3.6.3 /opt/apache-maven-3.6.3
 # maven
