@@ -109,12 +109,12 @@ run_spark_xgboost_train() {
                 --conf spark.speculation=false \
                 --conf spark.executor.heartbeatInterval=10000000 \
                 --conf spark.shuffle.io.maxRetries=5 \
-                --conf spark.executor.instances=24 \
+                --conf spark.executor.instances=16 \
                 --executor-cores 2 \
-                --executor-memory 2G \
-                --driver-memory 16G \
+                --executor-memory 1G \
+                --driver-memory 40G \
                 target/xgboostsparksgx-1.0-SNAPSHOT-jar-with-dependencies.jar \
-                /host/data 24 1 /host/data/model LDlxjm0y3HdGFniIGviJnMJbmFI+lt3dfIVyPJm1YSY=
+                /host/data 16 1 /host/data/model LDlxjm0y3HdGFniIGviJnMJbmFI+lt3dfIVyPJm1YSY=
 
 }
 
