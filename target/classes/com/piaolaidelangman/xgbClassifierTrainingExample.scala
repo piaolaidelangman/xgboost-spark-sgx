@@ -91,7 +91,7 @@ object xgbClassifierTrainingExample {
     xgbClassifier.setNumWorkers(num_workers)
     xgbClassifier.setMaxDepth(2)
     xgbClassifier.setNthread(num_threads)
-    xgbClassifier.setNumRound(100)
+    xgbClassifier.setNumRound(10)
     xgbClassifier.setTreeMethod("auto")
     xgbClassifier.setObjective("multi:softprob")
     xgbClassifier.setTimeoutRequestWorkers(180000L)

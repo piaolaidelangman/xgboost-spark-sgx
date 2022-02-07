@@ -16,9 +16,9 @@ init_instance() {
     occlum init
     new_json="$(jq '.resource_limits.user_space_size = "SGX_MEM_SIZE" |
         .resource_limits.max_num_of_threads = 4096 |
-        .process.default_heap_size = "4096MB" |
+        .process.default_heap_size = "10240MB" |
         .resource_limits.kernel_space_heap_size="4096MB" |
-        .process.default_mmap_size = "223232MB" |
+        .process.default_mmap_size = "204800MB" |
         .entry_points = [ "/usr/lib/jvm/java-11-openjdk-amd64/bin" ] |
         .env.untrusted = [ "DMLC_TRACKER_URI", "SPARK_DRIVER_URL" ] |
         .env.default = [ "LD_LIBRARY_PATH=/usr/lib/jvm/java-11-openjdk-amd64/lib/server:/usr/lib/jvm/java-11-openjdk-amd64/lib:/usr/lib/jvm/java-11-openjdk-amd64/../lib:/lib","SPARK_CONF_DIR=/bin/conf","SPARK_ENV_LOADED=1","PYTHONHASHSEED=0","SPARK_HOME=/bin","SPARK_SCALA_VERSION=2.12","SPARK_JARS_DIR=/bin/jars","LAUNCH_CLASSPATH=/bin/jars/*",""]' Occlum.json)" && \
@@ -98,7 +98,7 @@ run_spark_xgboost_train() {
                 -Divy.home="/tmp/.ivy" \
                 -Dos.name="Linux" \
                 -cp "$SPARK_HOME/conf/:$SPARK_HOME/jars/*:/bin/jars/*" \
-                -Xmx218g -Xms218g org.apache.spark.deploy.SparkSubmit \
+                -Xms196g org.apache.spark.deploy.SparkSubmit \
                 --master local[16] \
                 --conf spark.task.cpus=16 \
                 --class xgboostsparksgx.xgbClassifierTrainingExample \
@@ -108,11 +108,22 @@ run_spark_xgboost_train() {
                 --conf spark.starvation.timeout=2500000 \
                 --conf spark.speculation=false \
                 --conf spark.executor.heartbeatInterval=10000000 \
+                --conf spark.sql.shuffle.partitions=400 \
                 --conf spark.shuffle.io.maxRetries=8 \
+                --conf spark.driver.maxResultSize=8g \
+                --conf spark.driver.memoryOverhead=20g \
+                --conf spark.executor.memoryOverhead=2g \
+                --conf spark.kryoserializer.buffer.max=1024m \
+                --conf spark.memory.offHeap.enabled=true \
+                --conf spark.memory.offHeap.size=8g \
+                --conf spark.storage.memoryMapThreshold=8m \
+                --conf spark.task.reaper.threadDump=false \
+                --conf spark.sql.files.maxPartitionBytes=512m \
+                --conf spark.sql.inMemoryColumnarStorage.enableVectorizedReader=false \
                 --num-executors 16 \
                 --executor-cores 4 \
                 --executor-memory 8G \
-                --driver-memory 90G \
+                --driver-memory 64G \
                 /bin/jars/xgboostsparksgx-1.0-SNAPSHOT-jar-with-dependencies.jar \
                 /host/data 16 1 /host/data/model LDlxjm0y3HdGFniIGviJnMJbmFI+lt3dfIVyPJm1YSY=
 
