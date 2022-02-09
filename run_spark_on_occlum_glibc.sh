@@ -157,7 +157,7 @@ run_spark_xgboost_train() {
                 --executor-memory 2G \
                 --driver-memory 32G \
                 /bin/jars/xgboostsparksgx-1.0-SNAPSHOT-jar-with-dependencies.jar \
-                /host/data 96 1 /host/data/model LDlxjm0y3HdGFniIGviJnMJbmFI+lt3dfIVyPJm1YSY=
+                /host/data 96 600 /host/data/model LDlxjm0y3HdGFniIGviJnMJbmFI+lt3dfIVyPJm1YSY=
 }
 
 id=$([ -f "$pid" ] && echo $(wc -l < "$pid") || echo "0")

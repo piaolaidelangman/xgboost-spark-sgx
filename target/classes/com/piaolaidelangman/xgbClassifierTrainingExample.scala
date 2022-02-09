@@ -27,7 +27,7 @@ object xgbClassifierTrainingExample {
 
     val input_path = args(0) // path to iris.data
     val num_threads = args(1).toInt
-    val num_workers = args(2).toInt
+    val num_repartions = args(2).toInt
     val modelsave_path = args(3) // save model to this path
     val secret = args(4)
 
@@ -59,8 +59,7 @@ object xgbClassifierTrainingExample {
       }
     ))
 
-    val df = spark.createDataFrame(rowRDD,schema)
-    df.show()
+    val df = spark.createDataFrame(rowRDD,schema).coalesce(num_repartions)
 
     val stringIndexer = new StringIndexer()
       .setInputCol("_c0")
@@ -89,7 +88,7 @@ object xgbClassifierTrainingExample {
     xgbClassifier.setFeaturesCol("features")
     xgbClassifier.setLabelCol("classIndex")
     xgbClassifier.setNumClass(2)
-    xgbClassifier.setNumWorkers(num_workers)
+    xgbClassifier.setNumWorkers(1)
     xgbClassifier.setMaxDepth(2)
     xgbClassifier.setNthread(num_threads)
     xgbClassifier.setNumRound(10)
