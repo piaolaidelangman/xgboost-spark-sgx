@@ -154,8 +154,8 @@ run_spark_xgboost_train() {
                 --conf spark.shuffle.io.maxRetries=8 \
                 --num-executors 50 \
                 --executor-cores 2 \
-                --executor-memory 4G \
-                --driver-memory 64G \
+                --executor-memory 2G \
+                --driver-memory 32G \
                 /bin/jars/xgboostsparksgx-1.0-SNAPSHOT-jar-with-dependencies.jar \
                 /host/data 96 1 /host/data/model LDlxjm0y3HdGFniIGviJnMJbmFI+lt3dfIVyPJm1YSY=
 }
