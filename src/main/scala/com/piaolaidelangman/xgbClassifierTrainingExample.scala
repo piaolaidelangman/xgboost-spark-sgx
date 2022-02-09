@@ -60,6 +60,7 @@ object xgbClassifierTrainingExample {
     ))
 
     val df = spark.createDataFrame(rowRDD,schema)
+    df.show()
 
     val stringIndexer = new StringIndexer()
       .setInputCol("_c0")
