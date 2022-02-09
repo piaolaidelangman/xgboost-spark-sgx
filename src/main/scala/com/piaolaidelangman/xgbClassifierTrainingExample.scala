@@ -38,7 +38,7 @@ object xgbClassifierTrainingExample {
     var decryption = sc.binaryFiles(input_path)
       .map{ case (name, bytesData) => {
         task.decryptBytesWithJavaAESCBC(bytesData.toArray, key)
-      }}.repartition(num_repartions)
+      }}.coalesce(num_repartions)
 
     var structFieldArray = new Array[StructField](40)
     for(i <- 0 to 39){
