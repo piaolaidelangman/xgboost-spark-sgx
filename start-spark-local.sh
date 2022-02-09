@@ -4,7 +4,7 @@ sudo docker run -it \
 	--privileged \
 	--net=host \
 	--name=xgboost-spark-sgx \
-	--cpuset-cpus 10-49 \
+	--cpuset-cpus 26-126 \
 	--device=/dev/sgx/enclave \
 	--device=/dev/sgx/provision \
 	-v /var/run/aesmd/aesm.socket:/var/run/aesmd/aesm.socket \
