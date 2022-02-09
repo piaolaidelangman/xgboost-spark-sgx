@@ -8,7 +8,7 @@ sudo docker run -it \
 	--device=/dev/sgx/enclave \
 	--device=/dev/sgx/provision \
 	-v /var/run/aesmd/aesm.socket:/var/run/aesmd/aesm.socket \
-    -v /home/sdp/diankun/encrypted_data_50G:/opt/occlum_spark/data \
+    -v /home/sdp/diankun/encrypted_data_76G:/opt/occlum_spark/data \
 	-e LOCAL_IP=192.168.0.111 \
 	-e SGX_MEM_SIZE=180GB \
 	xgboost-spark-sgx:1.0 \
