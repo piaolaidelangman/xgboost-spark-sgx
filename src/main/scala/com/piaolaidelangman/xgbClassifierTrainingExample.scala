@@ -38,7 +38,7 @@ object xgbClassifierTrainingExample {
     var decryption = sc.binaryFiles(input_path)
       .map{ case (name, bytesData) => {
         task.decryptBytesWithJavaAESCBC(bytesData.toArray, key)
-      }}
+      }}.repartition(num_repartions)
 
     var structFieldArray = new Array[StructField](40)
     for(i <- 0 to 39){
@@ -59,7 +59,7 @@ object xgbClassifierTrainingExample {
       }
     ))
 
-    val df = spark.createDataFrame(rowRDD,schema).coalesce(num_repartions)
+    val df = spark.createDataFrame(rowRDD,schema)
 
     val stringIndexer = new StringIndexer()
       .setInputCol("_c0")
