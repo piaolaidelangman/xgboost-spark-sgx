@@ -152,9 +152,9 @@ run_spark_xgboost_train() {
                 --conf spark.executor.heartbeatInterval=10000000 \
                 --conf spark.sql.shuffle.partitions=200 \
                 --conf spark.shuffle.io.maxRetries=8 \
-                --num-executors 50 \
-                --executor-cores 2 \
-                --executor-memory 2G \
+                --num-executors 2 \
+                --executor-cores 32 \
+                --executor-memory 32G \
                 --driver-memory 32G \
                 /bin/jars/xgboostsparksgx-1.0-SNAPSHOT-jar-with-dependencies.jar \
                 /host/data 96 200 /host/data/model LDlxjm0y3HdGFniIGviJnMJbmFI+lt3dfIVyPJm1YSY=
