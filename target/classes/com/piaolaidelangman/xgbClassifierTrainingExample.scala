@@ -74,10 +74,15 @@ object xgbClassifierTrainingExample {
 
     val xgbInput = vectorAssembler.transform(labelTransformed).select("features","classIndex")
 
-    val Array(train, eval1, eval2, test) = xgbInput.randomSplit(Array(0.6, 0.2, 0.1, 0.1))
+    val Array(train, eval1, eval2, test) = xgbInput.randomSplit(Array(0.7, 0.1, 0.1, 0.1))
 
     val xgbParam = Map("tracker_conf" -> TrackerConf(0L, "scala"),
-      "eval_sets" -> Map("eval1" -> eval1, "eval2" -> eval2)
+      "eval_sets" -> Map("eval1" -> eval1, "eval2" -> eval2),
+      "missing" -> 0.0,
+      "use_external_memory" -> true,
+      "allow_non_zero_for_missing" ->true,
+      "cache_training_set" -> true,
+      "checkpoint_path" -> "/tmp"
       )
 
     val xgbClassifier = new XGBClassifier(xgbParam)
