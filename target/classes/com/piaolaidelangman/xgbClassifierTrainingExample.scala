@@ -34,13 +34,13 @@ object xgbClassifierTrainingExample {
     var decryption = sc.binaryFiles(input_path)
       .map{ case (name, bytesData) => {
         task.decryptBytesWithJavaAESCBC(bytesData.toArray, key)
-      }}.repartition(num_repartions)
+      }}
+      //.repartition(num_repartions)
 
     var structFieldArray = new Array[StructField](40)
     for(i <- 0 to 39){
       // structFieldArray(i) = StructField("_c" + i.toString, if(i<14) IntegerType else LongType, true)
       structFieldArray(i) = StructField("_c" + i.toString, LongType, true)
-
     }
     var schema =  new StructType(structFieldArray)
   
@@ -74,14 +74,15 @@ object xgbClassifierTrainingExample {
 
     val xgbInput = vectorAssembler.transform(labelTransformed).select("features","classIndex")
 
-    val Array(train, eval1, eval2, test) = xgbInput.randomSplit(Array(0.7, 0.1, 0.1, 0.1))
+    val Array(train, eval1, eval2, test) = xgbInput.randomSplit(Array(0.6, 0.2, 0.1, 0.1))
 
     val xgbParam = Map("tracker_conf" -> TrackerConf(0L, "scala"),
       "eval_sets" -> Map("eval1" -> eval1, "eval2" -> eval2),
+      "missing" -> 0,
       "use_external_memory" -> true,
       "allow_non_zero_for_missing" ->true,
       "cache_training_set" -> true,
-      "checkpoint_path" -> "/tmp"
+      "checkpoint_path" -> "/tmp",
       )
 
     val xgbClassifier = new XGBClassifier(xgbParam)
@@ -93,7 +94,7 @@ object xgbClassifierTrainingExample {
     xgbClassifier.setNthread(num_threads)
     xgbClassifier.setNumRound(10)
     xgbClassifier.setTreeMethod("auto")
-    // xgbClassifier.setObjective("multi:softprob")
+    xgbClassifier.setObjective("multi:softprob")
     xgbClassifier.setTimeoutRequestWorkers(180000L)
 
     val xgbClassificationModel = xgbClassifier.fit(train)
