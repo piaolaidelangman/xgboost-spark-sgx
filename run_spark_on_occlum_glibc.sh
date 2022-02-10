@@ -16,7 +16,7 @@ init_instance() {
     occlum init
     new_json="$(jq '.resource_limits.user_space_size = "SGX_MEM_SIZE" |
         .resource_limits.max_num_of_threads = 4096 |
-        .process.default_heap_size = "4096MB" |
+        .process.default_heap_size = "20480MB" |
         .resource_limits.kernel_space_heap_size="4096MB" |
         .process.default_mmap_size = "81920MB" |
         .entry_points = [ "/usr/lib/jvm/java-11-openjdk-amd64/bin" ] |
@@ -152,14 +152,14 @@ run_spark_xgboost_train() {
                 --conf spark.executor.heartbeatInterval=10000000 \
                 --conf spark.shuffle.io.maxRetries=8 \
                 --conf spark.memory.offHeap.enabled=true \
-                --conf spark.memory.offHeap.size=10g \
+                --conf spark.memory.offHeap.size=20g \
                 --conf spark.driver.maxResultSize=0 \
-                --num-executors 4 \
-                --executor-cores 4 \
-                --executor-memory 8G \
+                --num-executors 2 \
+                --executor-cores 8 \
+                --executor-memory 16G \
                 --driver-memory 32G \
                 /bin/jars/xgboostsparksgx-1.0-SNAPSHOT-jar-with-dependencies.jar \
-                /host/data 4 200 /host/data/model LDlxjm0y3HdGFniIGviJnMJbmFI+lt3dfIVyPJm1YSY=
+                /host/data 2 200 /host/data/model LDlxjm0y3HdGFniIGviJnMJbmFI+lt3dfIVyPJm1YSY=
 }
 
 id=$([ -f "$pid" ] && echo $(wc -l < "$pid") || echo "0")

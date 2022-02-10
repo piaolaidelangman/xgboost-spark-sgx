@@ -1,11 +1,6 @@
 package xgboostsparksgx
 
-
-// import org.apache.spark.ml.feature.{StringIndexer, VectorAssembler}
 import org.apache.spark.sql.{SparkSession, Row}
-// import org.apache.spark.SparkContext
-// import org.apache.spark.sql.types.{IntegerType, DoubleType, StringType, StructField, StructType, BinaryType, ArrayType, FloatType, LongType, ByteType, DataTypes}
-// import org.apache.spark.sql.functions.{col, udf}
 
 
 object PrepareData {
