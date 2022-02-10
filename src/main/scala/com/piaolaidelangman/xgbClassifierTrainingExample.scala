@@ -2,11 +2,9 @@ package xgboostsparksgx
 
 import ml.dmlc.xgboost4j.scala.spark.TrackerConf
 
-import org.apache.spark.SparkContext
 import org.apache.spark.ml.feature.{StringIndexer, VectorAssembler}
 import org.apache.spark.sql.{SparkSession, Row}
-import org.apache.spark.SparkContext
-import org.apache.spark.sql.types.{IntegerType, DoubleType, StringType, StructField, StructType, BinaryType, ArrayType, FloatType, LongType, ByteType, DataTypes}
+import org.apache.spark.sql.types.{IntegerType, StructField, StructType, LongType}
 import org.apache.spark.sql.functions.{col, udf}
 
 import java.util.Base64
@@ -15,11 +13,7 @@ import java.util.Base64
 object xgbClassifierTrainingExample {
 
   def main(args: Array[String]): Unit = {
-    // if (args.length < 4) {
-    //   println("Usage: program input_path num_threads num_round modelsave_path")
-    //   sys.exit(1)
-    // }
-    val sc = new SparkContext()
+
     val spark = SparkSession.builder().getOrCreate()
     import spark.implicits._
 
@@ -93,13 +87,12 @@ object xgbClassifierTrainingExample {
     xgbClassifier.setNthread(num_threads)
     xgbClassifier.setNumRound(10)
     xgbClassifier.setTreeMethod("auto")
-    xgbClassifier.setObjective("multi:softprob")
+    // xgbClassifier.setObjective("multi:softprob")
     xgbClassifier.setTimeoutRequestWorkers(180000L)
 
     val xgbClassificationModel = xgbClassifier.fit(train)
     xgbClassificationModel.save(modelsave_path)
 
-    sc.stop()
     spark.stop()
   }
 }
