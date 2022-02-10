@@ -16,7 +16,7 @@ init_instance() {
     occlum init
     new_json="$(jq '.resource_limits.user_space_size = "SGX_MEM_SIZE" |
         .resource_limits.max_num_of_threads = 4096 |
-        .process.default_heap_size = "20480MB" |
+        .process.default_heap_size = "40960MB" |
         .resource_limits.kernel_space_heap_size="4096MB" |
         .process.default_mmap_size = "81920MB" |
         .entry_points = [ "/usr/lib/jvm/java-11-openjdk-amd64/bin" ] |
@@ -153,7 +153,7 @@ run_spark_xgboost_train() {
                 --conf spark.shuffle.io.maxRetries=8 \
                 --conf spark.memory.offHeap.enabled=true \
                 --conf spark.memory.offHeap.size=20g \
-                --conf spark.driver.maxResultSize=0 \
+                --conf spark.driver.maxResultSize=4g \
                 --num-executors 2 \
                 --executor-cores 8 \
                 --executor-memory 16G \
