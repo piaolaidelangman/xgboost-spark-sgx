@@ -136,28 +136,30 @@ run_spark_xgboost_train() {
     echo -e "occlum run xgboost spark "
     occlum run /usr/lib/jvm/java-11-openjdk-amd64/bin/java \
                 -XX:-UseCompressedOops -XX:MaxMetaspaceSize=1024m \
-                -XX:ActiveProcessorCount=4 \
+                -XX:ActiveProcessorCount=8 \
                 -Divy.home="/tmp/.ivy" \
                 -Dos.name="Linux" \
                 -cp "$SPARK_HOME/conf/:$SPARK_HOME/jars/*:/bin/jars/*" \
                 -Xmx140g -Xms140g org.apache.spark.deploy.SparkSubmit \
-                --master local[100] \
-                --conf spark.task.cpus=100 \
+                --master local[32] \
+                --conf spark.task.cpus=4 \
+                --conf spark.task.maxFailures=8 \
                 --class xgboostsparksgx.xgbClassifierTrainingExample \
                 --conf spark.scheduler.maxRegisteredResourcesWaitingTime=50000000 \
                 --conf spark.worker.timeout=60000000 \
                 --conf spark.network.timeout=10000000 \
                 --conf spark.starvation.timeout=2500000 \
-                --conf spark.speculation=false \
                 --conf spark.executor.heartbeatInterval=10000000 \
-                --conf spark.sql.shuffle.partitions=200 \
                 --conf spark.shuffle.io.maxRetries=8 \
-                --num-executors 2 \
-                --executor-cores 32 \
-                --executor-memory 32G \
-                --driver-memory 32G \
+                --conf spark.memory.offHeap.enabled=true \
+                --conf spark.memory.offHeap.size=10g \
+                --conf spark.driver.maxResultSize=0 \
+                --num-executors 4 \
+                --executor-cores 4 \
+                --executor-memory 16G \
+                --driver-memory 64G \
                 /bin/jars/xgboostsparksgx-1.0-SNAPSHOT-jar-with-dependencies.jar \
-                /host/data 96 200 /host/data/model LDlxjm0y3HdGFniIGviJnMJbmFI+lt3dfIVyPJm1YSY=
+                /host/data 4 200 /host/data/model LDlxjm0y3HdGFniIGviJnMJbmFI+lt3dfIVyPJm1YSY=
 }
 
 id=$([ -f "$pid" ] && echo $(wc -l < "$pid") || echo "0")
