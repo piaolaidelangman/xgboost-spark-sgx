@@ -2,6 +2,7 @@ package xgboostsparksgx
 
 import ml.dmlc.xgboost4j.scala.spark.TrackerConf
 
+import org.apache.spark.SparkContext
 import org.apache.spark.ml.feature.{StringIndexer, VectorAssembler}
 import org.apache.spark.sql.{SparkSession, Row}
 import org.apache.spark.sql.types.{IntegerType, StructField, StructType, LongType}
@@ -14,6 +15,7 @@ object xgbClassifierTrainingExample {
 
   def main(args: Array[String]): Unit = {
 
+    val sc = new SparkContext()
     val spark = SparkSession.builder().getOrCreate()
     import spark.implicits._
 
