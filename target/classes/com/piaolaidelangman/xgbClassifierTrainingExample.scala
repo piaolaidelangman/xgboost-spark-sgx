@@ -76,11 +76,11 @@ object xgbClassifierTrainingExample {
 
     val xgbParam = Map("tracker_conf" -> TrackerConf(0L, "scala"),
       "eval_sets" -> Map("eval1" -> eval1, "eval2" -> eval2),
-      // "missing" -> 0,
-      // "use_external_memory" -> true,
-      // "allow_non_zero_for_missing" ->true,
-      // "cache_training_set" -> true,
-      // "checkpoint_path" -> "/tmp",
+      "missing" -> 0,
+      "use_external_memory" -> true,
+      "allow_non_zero_for_missing" ->true,
+      "cache_training_set" -> true,
+      "checkpoint_path" -> "/tmp",
       )
 
     val xgbClassifier = new XGBClassifier(xgbParam)

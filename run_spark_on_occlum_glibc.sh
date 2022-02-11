@@ -16,7 +16,7 @@ init_instance() {
     occlum init
     new_json="$(jq '.resource_limits.user_space_size = "SGX_MEM_SIZE" |
         .resource_limits.max_num_of_threads = 4096 |
-        .process.default_heap_size = "51200MB" |
+        .process.default_heap_size = "20480MB" |
         .resource_limits.kernel_space_heap_size="4096MB" |
         .process.default_mmap_size = "40960MB" |
         .entry_points = [ "/usr/lib/jvm/java-11-openjdk-amd64/bin" ] |
@@ -141,7 +141,7 @@ run_spark_xgboost_train() {
                 -Dos.name="Linux" \
                 -cp "$SPARK_HOME/conf/:$SPARK_HOME/jars/*:/bin/jars/*" \
                 -Xmx36g -Xms36g org.apache.spark.deploy.SparkSubmit \
-                --master local[32] \
+                --master local[16] \
                 --conf spark.task.cpus=4 \
                 --conf spark.task.maxFailures=8 \
                 --class xgboostsparksgx.xgbClassifierTrainingExample \
