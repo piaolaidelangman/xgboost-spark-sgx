@@ -116,9 +116,7 @@ run_spark_xgboost_train() {
                 /bin/jars/xgboostsparksgx-1.0-SNAPSHOT-jar-with-dependencies.jar \
                 /host/data 2 /host/data/model LDlxjm0y3HdGFniIGviJnMJbmFI+lt3dfIVyPJm1YSY=
 }
-                # --conf spark.memory.offHeap.enabled=true \
-                # --conf spark.memory.offHeap.size=20g \
-                # --conf spark.driver.maxResultSize=4g \
+
 id=$([ -f "$pid" ] && echo $(wc -l < "$pid") || echo "0")
 
 arg=$1
