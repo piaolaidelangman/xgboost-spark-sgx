@@ -110,12 +110,7 @@ run_spark_xgboost_train() {
                 /bin/jars/xgboostsparksgx-1.0-SNAPSHOT-jar-with-dependencies.jar \
                 /host/data 2 /host/data/model LDlxjm0y3HdGFniIGviJnMJbmFI+lt3dfIVyPJm1YSY=
 }
-                # --conf spark.scheduler.maxRegisteredResourcesWaitingTime=50000000 \
-                # --conf spark.worker.timeout=60000000 \
-                # --conf spark.network.timeout=10000000 \
-                # --conf spark.starvation.timeout=2500000 \
-                # --conf spark.executor.heartbeatInterval=10000000 \
-                # --conf spark.shuffle.io.maxRetries=8 \
+
 id=$([ -f "$pid" ] && echo $(wc -l < "$pid") || echo "0")
 
 arg=$1
