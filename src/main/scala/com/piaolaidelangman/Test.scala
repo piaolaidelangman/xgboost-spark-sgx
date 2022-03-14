@@ -5,16 +5,17 @@ import ml.dmlc.xgboost4j.scala.spark.TrackerConf
 import org.apache.spark.SparkContext
 import org.apache.spark.ml.feature.{StringIndexer, VectorAssembler}
 import org.apache.spark.sql.{SparkSession, Row}
-import org.apache.spark.sql.types.{IntegerType, StructField, StructType, LongType}
+import org.apache.spark.sql.types.{IntegerType, StructField, StructType, LongType, DoubleType}
 import org.apache.spark.sql.functions.{col, udf}
 
 import java.util.Base64
 
 
-object xgbClassifierTrainingExample {
+object Test {
 
   def main(args: Array[String]): Unit = {
 
+    val featureNum = 4
     val sc = new SparkContext()
     val spark = SparkSession.builder().getOrCreate()
     import spark.implicits._
@@ -26,19 +27,15 @@ object xgbClassifierTrainingExample {
     val modelsave_path = args(2) // save model to this path
     val secret = args(3)
 
-    val decoder = Base64.getDecoder()
-    val encoder = Base64.getEncoder()
-    val key = decoder.decode(decoder.decode(encoder.encodeToString(secret.getBytes)))
-
     var decryption = sc.binaryFiles(input_path)
       .map{ case (name, bytesData) => {
-        task.decryptBytesWithJavaAESCBC(bytesData.toArray, key)
+        task.decryptBytesWithJavaAESCBC(bytesData.toArray, secret)
       }}
 
     var structFieldArray = new Array[StructField](40)
-    for(i <- 0 to 39){
+    for(i <- 0 to featureNum){
       // structFieldArray(i) = StructField("_c" + i.toString, if(i<14) IntegerType else LongType, true)
-      structFieldArray(i) = StructField("_c" + i.toString, LongType, true)
+      structFieldArray(i) = StructField("_c" + i.toString, DoubleType, true)
     }
     var schema =  new StructType(structFieldArray)
   
@@ -46,10 +43,9 @@ object xgbClassifierTrainingExample {
 
     val rowRDD = decryptionRDD.map(_.split(" ")).map(row => Row.fromSeq(
       for{
-        i <- 0 to 39
+        i <- 0 to featureNum
       } yield {
-        // if(i<14) row(i).toInt else row(i).toLong
-        row(i).toLong
+        row(i).toDouble
       }
     ))
 
@@ -61,8 +57,8 @@ object xgbClassifierTrainingExample {
       .fit(df)
     val labelTransformed = stringIndexer.transform(df).drop("_c0")
 
-    var inputCols = new Array[String](39)
-    for(i <- 0 to 38){
+    var inputCols = new Array[String](featureNum)
+    for(i <- 0 to featureNum-1){
       inputCols(i) = "_c" + (i+1).toString
     }
 
@@ -86,7 +82,7 @@ object xgbClassifierTrainingExample {
     val xgbClassifier = new XGBClassifier(xgbParam)
     xgbClassifier.setFeaturesCol("features")
     xgbClassifier.setLabelCol("classIndex")
-    xgbClassifier.setNumClass(2)
+    xgbClassifier.setNumClass(3)
     xgbClassifier.setNumWorkers(1)
     xgbClassifier.setMaxDepth(2)
     xgbClassifier.setNthread(num_threads)

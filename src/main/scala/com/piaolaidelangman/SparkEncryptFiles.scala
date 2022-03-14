@@ -15,10 +15,6 @@ object SparkEncryptFiles {
         val outputPath = args(1)
         val secret = args(2)
 
-        val decoder = Base64.getDecoder()
-        val encoder = Base64.getEncoder()
-        val key = decoder.decode(decoder.decode(encoder.encodeToString(secret.getBytes)))
-
         val sc = new SparkContext()
         val task = new Task()
 
@@ -29,11 +25,9 @@ object SparkEncryptFiles {
         val rdd = sc.binaryFiles(inputPath)
         .map{ case (name, bytesData) => {
             val tmpOutputPath = Paths.get(outputPath, name.split("/").last)
-            Files.write(tmpOutputPath, task.encryptBytesWithJavaAESCBC(bytesData.toArray, key))
-            tmpOutputPath.toString + " AES-CBC encrypt successfully saved!"
-            // new String(task.encryptBytesWithJavaAESCBC(bytesData.toArray, key))
+            Files.write(tmpOutputPath, task.encryptBytesWithJavaAESCBC(bytesData.toArray, secret))
+            println(tmpOutputPath.toString + " AES-CBC encrypt successfully saved!")
         }}
-        rdd.foreach(println)
 
         sc.stop()
     }
