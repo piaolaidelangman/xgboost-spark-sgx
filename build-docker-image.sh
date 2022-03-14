@@ -1,7 +1,7 @@
-export HTTP_PROXY_HOST=child-prc.intel.com
-export HTTP_PROXY_PORT=913
-export HTTPS_PROXY_HOST=child-prc.intel.com
-export HTTPS_PROXY_PORT=913
+export HTTP_PROXY_HOST=
+export HTTP_PROXY_PORT=
+export HTTPS_PROXY_HOST=
+export HTTPS_PROXY_PORT=
 
 sudo docker build \
     --build-arg http_proxy=http://$HTTP_PROXY_HOST:$HTTP_PROXY_PORT \
