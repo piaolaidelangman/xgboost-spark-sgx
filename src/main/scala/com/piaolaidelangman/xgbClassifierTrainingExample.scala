@@ -26,13 +26,9 @@ object xgbClassifierTrainingExample {
     val modelsave_path = args(2) // save model to this path
     val secret = args(3)
 
-    val decoder = Base64.getDecoder()
-    val encoder = Base64.getEncoder()
-    val key = decoder.decode(decoder.decode(encoder.encodeToString(secret.getBytes)))
-
     var decryption = sc.binaryFiles(input_path)
       .map{ case (name, bytesData) => {
-        task.decryptBytesWithJavaAESCBC(bytesData.toArray, key)
+        task.decryptBytesWithJavaAESCBC(bytesData.toArray, secret)
       }}
 
     var structFieldArray = new Array[StructField](40)

@@ -19,9 +19,10 @@ class Task extends Serializable{
       case i => Some( (if (i < 14) row(i) else java.lang.Long.parseLong(row(i).toString, 16)).toString )
     } mkString " "
   }
-  def encryptBytesWithJavaAESCBC(content: Array[Byte], secret: Array[Byte]): Array[Byte] = {
-    val encoder = Base64.getUrlEncoder()
-
+  
+  def encryptBytesWithJavaAESCBC(content: Array[Byte], key: String): Array[Byte] = {
+    val decoder = Base64.getDecoder()
+    val secret = decoder.decode(key.getBytes)
     //  get IV
     val random = new SecureRandom()
     val initializationVector: Array[Byte] = new Array[Byte](16)
@@ -63,26 +64,24 @@ class Task extends Serializable{
     dataOutStream.write(cipherText)
     dataOutStream.write(hmac)
 
-    // if (timestamp == null) {
-    //     throw new CryptoException("Timestamp cannot be null")
-    // }
-    // if (ivParameterSpec == null || ivParameterSpec.getIV().length != 16) {
-    //     throw new CryptoException("Initialization Vector must be 128 bits")
-    // }
-    // if (cipherText == null || cipherText.length % 16 != 0) {
-    //     throw new CryptoException("Ciphertext must be a multiple of 128 bits")
-    // }
-    // if (hmac == null || hmac.length != 32) {
-    //     throw new CryptoException("Hmac must be 256 bits")
-    // }
-
-    val resultString = new String(encoder.encodeToString(outByteStream.toByteArray()))
-    resultString.getBytes
+    if (timestamp == null) {
+        throw new CryptoException("Timestamp cannot be null")
+    }
+    if (ivParameterSpec == null || ivParameterSpec.getIV().length != 16) {
+        throw new CryptoException("Initialization Vector must be 128 bits")
+    }
+    if (cipherText == null || cipherText.length % 16 != 0) {
+        throw new CryptoException("Ciphertext must be a multiple of 128 bits")
+    }
+    if (hmac == null || hmac.length != 32) {
+        throw new CryptoException("Hmac must be 256 bits")
+    }
+    Task.encoder.encodeToString(outByteStream.toByteArray()).getBytes
   }
 
-  def decryptBytesWithJavaAESCBC(content: Array[Byte], secret: Array[Byte]): String = {
-    val decoder = Base64.getUrlDecoder()
-    val bytes = decoder.decode(new String(content))
+  def decryptBytesWithJavaAESCBC(content: Array[Byte], key: String): String = {
+    val secret = Task.decoder.decode(key.getBytes)
+    val bytes = Task.decoder.decode(new String(content))
 
     val inputStream: ByteArrayInputStream = new ByteArrayInputStream(bytes)
     val dataStream: DataInputStream = new DataInputStream(inputStream)
@@ -126,4 +125,9 @@ class Task extends Serializable{
     }
     retval
   }
+}
+
+object Task {
+  val decoder = Base64.getDecoder()
+  val encoder = Base64.getEncoder()
 }

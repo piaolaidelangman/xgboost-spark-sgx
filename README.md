@@ -6,6 +6,36 @@ This is a project for xgboost-spark running in sgx(occlum).
 * [Spark]()
 * [SGX]
 
+feature1,feature2,feature3,feature4,class
+
+## Split And Encrypt
+rm -rf ~/diankun/Output/* && \
+java -cp target/xgboostsparksgx-1.0-SNAPSHOT-jar-with-dependencies.jar \
+xgboostsparksgx.SplitAndEncrypt \
+./data/iris.csv \
+LDlxjm0y3HdGFniIGviJnMJbmFI+lt3dfIVyPJm1YSY= \
+~/diankun/Output \
+5
+
+## Split And Encrypt For XGBoost
+rm -rf ~/diankun/Output/* && \
+java -cp target/xgboostsparksgx-1.0-SNAPSHOT-jar-with-dependencies.jar \
+xgboostsparksgx.SplitAndEncryptForXgboost \
+~/diankun/data/xgboost_data \
+LDlxjm0y3HdGFniIGviJnMJbmFI+lt3dfIVyPJm1YSY= \
+~/diankun/Output \
+5
+
+## Decrypt
+$SPARK_HOME/bin/spark-submit   \
+  --master local[4] \
+  --class xgboostsparksgx.SparkDecryptFiles \
+  --executor-cores 2 \
+  --executor-memory 4G \
+  target/xgboostsparksgx-1.0-SNAPSHOT-jar-with-dependencies.jar \
+  ~/diankun/Output/iris \
+  LDlxjm0y3HdGFniIGviJnMJbmFI+lt3dfIVyPJm1YSY=
+
 ## Build Jar
 
 rm -rf /home/sdp/diankun/process_data && \
