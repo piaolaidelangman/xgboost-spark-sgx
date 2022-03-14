@@ -1,7 +1,7 @@
-export HTTP_PROXY_HOST=your_http_proxy_host
-export HTTP_PROXY_PORT=your_http_proxy_port
-export HTTPS_PROXY_HOST=your_https_proxy_host
-export HTTPS_PROXY_PORT=your_https_proxy_port
+export HTTP_PROXY_HOST=
+export HTTP_PROXY_PORT=
+export HTTPS_PROXY_HOST=
+export HTTPS_PROXY_PORT=
 
 sudo docker build \
     --build-arg http_proxy=http://$HTTP_PROXY_HOST:$HTTP_PROXY_PORT \

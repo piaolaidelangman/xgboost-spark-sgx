@@ -15,10 +15,10 @@ init_instance() {
     cd occlum_spark
     occlum init
     new_json="$(jq '.resource_limits.user_space_size = "SGX_MEM_SIZE" |
-        .resource_limits.max_num_of_threads = 256 |
-        .process.default_heap_size = "512MB" |
-        .resource_limits.kernel_space_heap_size="1024MB" |
-        .process.default_mmap_size = "18000MB" |
+        .resource_limits.max_num_of_threads = 4096 |
+        .process.default_heap_size = "102400MB" |
+        .resource_limits.kernel_space_heap_size="2048MB" |
+        .process.default_mmap_size = "32768MB" |
         .entry_points = [ "/usr/lib/jvm/java-11-openjdk-amd64/bin" ] |
         .env.untrusted = [ "DMLC_TRACKER_URI", "SPARK_DRIVER_URL" ] |
         .env.default = [ "LD_LIBRARY_PATH=/usr/lib/jvm/java-11-openjdk-amd64/lib/server:/usr/lib/jvm/java-11-openjdk-amd64/lib:/usr/lib/jvm/java-11-openjdk-amd64/../lib:/lib","SPARK_CONF_DIR=/bin/conf","SPARK_ENV_LOADED=1","PYTHONHASHSEED=0","SPARK_HOME=/bin","SPARK_SCALA_VERSION=2.12","SPARK_JARS_DIR=/bin/jars","LAUNCH_CLASSPATH=/bin/jars/*",""]' Occlum.json)" && \
@@ -68,6 +68,7 @@ build_spark() {
 
     # Prepare xgboost-spark-sgx
     mkdir -p image/bin/jars
+    # cp -f /opt/xgboost-spark-sgx/target/xgboostsparksgx-1.0-SNAPSHOT-jar-with-dependencies.jar image/bin/jars
     cp -f /opt/xgboostsparksgx-1.0-SNAPSHOT-jar-with-dependencies.jar image/bin/jars
     occlum build
 }
@@ -92,39 +93,22 @@ run_spark_xgboost_train() {
     build_spark
     echo -e "occlum run xgboost spark "
     occlum run /usr/lib/jvm/java-11-openjdk-amd64/bin/java \
-                -XX:-UseCompressedOops -XX:MaxMetaspaceSize=256m \
-                -XX:ActiveProcessorCount=4 \
+                -XX:-UseCompressedOops -XX:MaxMetaspaceSize=1024m \
+                -XX:ActiveProcessorCount=8 \
                 -Divy.home="/tmp/.ivy" \
                 -Dos.name="Linux" \
                 -cp "$SPARK_HOME/conf/:$SPARK_HOME/jars/*:/bin/jars/*" \
-                -Xmx10g org.apache.spark.deploy.SparkSubmit \
-                --master 'local[4]' \
-                --conf spark.driver.port=54321 \
-                --conf spark.driver.memory=2g \
-                --conf spark.driver.blockManager.port=10026 \
-                --conf spark.blockManager.port=10025 \
-                --conf spark.scheduler.maxRegisteredResourcesWaitingTime=5000000 \
-                --conf spark.worker.timeout=600 \
-                --conf spark.python.use.daemon=false \
-                --conf spark.python.worker.reuse=false \
-                --conf spark.network.timeout=10000000 \
-                --conf spark.starvation.timeout=250000 \
-                --conf spark.rpc.askTimeout=600 \
-                --conf spark.sql.autoBroadcastJoinThreshold=-1 \
-                --conf spark.io.compression.codec=lz4 \
-                --conf spark.sql.shuffle.partitions=8 \
-                --conf spark.speculation=false \
-                --conf spark.executor.heartbeatInterval=10000000 \
-                --conf spark.executor.instances=2 \
+                -Xmx30g -Xms30g org.apache.spark.deploy.SparkSubmit \
+                --master local[16] \
                 --conf spark.task.cpus=4 \
-                --executor-cores 8 \
-                --total-executor-cores 16 \
-                --executor-memory 1G \
-                --class xgboostsparksgx.xgbClassifierTrainingExample  \
-                --verbose \
+                --conf spark.task.maxFailures=8 \
+                --class xgboostsparksgx.xgbClassifierTrainingExample \
+                --num-executors 8 \
+                --executor-cores 2 \
+                --executor-memory 2G \
+                --driver-memory 10G \
                 /bin/jars/xgboostsparksgx-1.0-SNAPSHOT-jar-with-dependencies.jar \
-                /host/data 4 100 /host/data/model
-
+                /host/data 2 /host/data/model LDlxjm0y3HdGFniIGviJnMJbmFI+lt3dfIVyPJm1YSY=
 }
 
 id=$([ -f "$pid" ] && echo $(wc -l < "$pid") || echo "0")
