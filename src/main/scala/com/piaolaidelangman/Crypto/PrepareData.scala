@@ -21,10 +21,7 @@ object PrepareData {
 
     var df = spark.read.option("header", "false").option("inferSchema", "true").option("delimiter", "\t").csv(input_path).repartition(num_repartions)
 
-    // df.rdd.map(task.rowToLibsvm).saveAsTextFile(output_path)
-    // df.coalesce(num_repartions).map(task.rowToLibsvm).write.mode("overwrite").option("header",false).csv(output_path)
     df.map(task.rowToLibsvm).write.mode("overwrite").option("header",false).csv(output_path)
-    // df.map(task.rowToLibsvm).write.mode("overwrite").option("header",false).option("maxRecordsPerFile", num_repartions).csv(output_path)
 
     spark.stop()
   }
