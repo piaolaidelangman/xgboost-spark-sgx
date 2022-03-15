@@ -21,8 +21,7 @@ class Task extends Serializable{
   }
   
   def encryptBytesWithJavaAESCBC(content: Array[Byte], key: String): Array[Byte] = {
-    val decoder = Base64.getDecoder()
-    val secret = decoder.decode(key.getBytes)
+    val secret = Task.decoder.decode(key.getBytes)
     //  get IV
     val random = new SecureRandom()
     val initializationVector: Array[Byte] = new Array[Byte](16)
