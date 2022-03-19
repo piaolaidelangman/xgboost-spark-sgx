@@ -1,10 +1,7 @@
 package xgboostsparksgx
 
 import org.apache.spark.SparkContext
-
-import java.util.Base64
 import java.nio.file.{Files, Paths}
-
 /**
  * @author diankun.an
  */

@@ -1,16 +1,11 @@
 package xgboostsparksgx
 
-import ml.dmlc.xgboost4j.scala.spark.TrackerConf
-
 import org.apache.spark.SparkContext
-import org.apache.spark.ml.feature.{StringIndexer, VectorAssembler}
 import org.apache.spark.sql.{SparkSession, Row}
-import org.apache.spark.sql.types.{DoubleType, StructField, StructType, StringType}
-import org.apache.spark.sql.functions.{col, udf}
-
-import java.util.Base64
-
-
+import org.apache.spark.sql.types.{StructField, StructType, StringType}
+/**
+ * @author diankun.an
+ */
 object SparkDecryptFiles {
 
   def main(args: Array[String]): Unit = {

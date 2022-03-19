@@ -1,18 +1,14 @@
 package xgboostsparksgx
 
-// import com.intel.analytics.bigdl.dllib.utils.Engine
-
 import ml.dmlc.xgboost4j.scala.spark.{XGBoostClassificationModel, XGBoostClassifier}
 import org.apache.spark.ml.feature.VectorAssembler
 import org.apache.spark.sql.functions._
-import org.apache.spark.sql.{DataFrame, Dataset}
+import org.apache.spark.sql.{DataFrame}
 import org.apache.spark.sql.types._
 
 
 class XGBClassifier (val xgboostParams: Map[String, Any] = Map()) {
   private val model = new XGBoostClassifier(xgboostParams)
-//   model.setNthread(Engine.coreNumber())
-//   model.setMaxBins(256)
 
   def setFeaturesCol(featuresColName: String): this.type = {
     model.setFeaturesCol(featuresColName)
@@ -20,7 +16,6 @@ class XGBClassifier (val xgboostParams: Map[String, Any] = Map()) {
   }
 
   def fit(df: DataFrame): XGBClassifierModel = {
-    // df.repartition(Engine.nodeNumber())
     val xgbmodel = model.fit(df)
     new XGBClassifierModel(xgbmodel)
   }
@@ -84,12 +79,7 @@ class XGBClassifier (val xgboostParams: Map[String, Any] = Map()) {
     this
   }
 }
-/**
- * [[XGBClassifierModel]] is a trained XGBoost classification model.
- * The prediction column will have the prediction results.
- *
- * @param model trained XGBoostClassificationModel to use in prediction.
- */
+
 class XGBClassifierModel (
   val model: XGBoostClassificationModel) {
   private var featuresCols: Array[String] = null
@@ -136,13 +126,6 @@ class XGBClassifierModel (
 }
 
 object XGBClassifierModel {
-  // val modelPath = getClass.getResource("/model/0.82/model").getPath
-  //   val model = XGBoostClassificationModel.read.load(modelPath)
-  // def load(path: String, numClass: Int): XGBClassifierModel = {
-  //   // new XGBClassifierModel(XGBoostHelper.load(path, numClass))
-  //   new XGBClassifierModel(XGBoostClassificationModel.read.load(modelPath))
-
-  // }
 
   def load(path: String): XGBClassifierModel = {
     new XGBClassifierModel(XGBoostClassificationModel.load(path))

@@ -15,12 +15,12 @@ init_instance() {
     cd occlum_spark
     occlum init
     new_json="$(jq '.resource_limits.user_space_size = "SGX_MEM_SIZE" |
-        .resource_limits.max_num_of_threads = 4096 |
-        .process.default_heap_size = "102400MB" |
-        .resource_limits.kernel_space_heap_size="2048MB" |
-        .process.default_mmap_size = "32768MB" |
+        .resource_limits.max_num_of_threads = "SGX_THREAD" |
+        .process.default_heap_size = "SGX_HEAP" |
+        .resource_limits.kernel_space_heap_size="SGX_KERNEL_HEAP" |
+        .process.default_mmap_size = "SGX_MMAP" |
         .entry_points = [ "/usr/lib/jvm/java-11-openjdk-amd64/bin" ] |
-        .env.untrusted = [ "DMLC_TRACKER_URI", "SPARK_DRIVER_URL" ] |
+        .env.untrusted = [ "DMLC_TRACKER_URI", "SPARK_DRIVER_URL", "SPARK_TESTING" ] |
         .env.default = [ "LD_LIBRARY_PATH=/usr/lib/jvm/java-11-openjdk-amd64/lib/server:/usr/lib/jvm/java-11-openjdk-amd64/lib:/usr/lib/jvm/java-11-openjdk-amd64/../lib:/lib","SPARK_CONF_DIR=/bin/conf","SPARK_ENV_LOADED=1","PYTHONHASHSEED=0","SPARK_HOME=/bin","SPARK_SCALA_VERSION=2.12","SPARK_JARS_DIR=/bin/jars","LAUNCH_CLASSPATH=/bin/jars/*",""]' Occlum.json)" && \
     echo "${new_json}" > Occlum.json
     echo "SGX_MEM_SIZE ${SGX_MEM_SIZE}"
@@ -28,6 +28,30 @@ init_instance() {
         sed -i "s/SGX_MEM_SIZE/20GB/g" Occlum.json
     else
         sed -i "s/SGX_MEM_SIZE/${SGX_MEM_SIZE}/g" Occlum.json
+    fi
+
+    if [[ -z "$SGX_THREAD" ]]; then
+        sed -i "s/\"SGX_THREAD\"/512/g" Occlum.json
+    else
+        sed -i "s/\"SGX_THREAD\"/${SGX_THREAD}/g" Occlum.json
+    fi
+    
+    if [[ -z "$SGX_HEAP" ]]; then
+        sed -i "s/SGX_HEAP/512MB/g" Occlum.json
+    else
+        sed -i "s/SGX_HEAP/${SGX_HEAP}/g" Occlum.json
+    fi
+    
+    if [[ -z "$SGX_KERNEL_HEAP" ]]; then
+        sed -i "s/SGX_KERNEL_HEAP/1GB/g" Occlum.json
+    else
+        sed -i "s/SGX_KERNEL_HEAP/${SGX_KERNEL_HEAP}/g" Occlum.json
+    fi
+    
+    if [[ -z "$SGX_MMAP" ]]; then
+        sed -i "s/SGX_MMAP/10GB/g" Occlum.json
+    else
+        sed -i "s/SGX_MMAP/${SGX_MMAP}/g" Occlum.json
     fi
 }
 
@@ -108,7 +132,7 @@ run_spark_xgboost_train() {
                 --executor-memory 2G \
                 --driver-memory 10G \
                 /bin/jars/xgboostsparksgx-1.0-SNAPSHOT-jar-with-dependencies.jar \
-                /host/data 2 /host/data/model LDlxjm0y3HdGFniIGviJnMJbmFI+lt3dfIVyPJm1YSY=
+                /host/data/xgboost 2 /host/data/model LDlxjm0y3HdGFniIGviJnMJbmFI+lt3dfIVyPJm1YSY= 1
 }
 
 id=$([ -f "$pid" ] && echo $(wc -l < "$pid") || echo "0")
@@ -123,7 +147,7 @@ case "$arg" in
         run_spark_pi
         cd ../
         ;;
-    xgboost_train)
+    xgboost)
         run_spark_xgboost_train
         cd ../
         ;;

@@ -14,10 +14,9 @@ ${SPARK_HOME}/bin/spark-submit \
     --conf spark.kubernetes.executor.podTemplateFile=./executor.yaml \
     --conf spark.kubernetes.file.upload.path=file:///tmp \
     --conf spark.task.cpus=2 \
-    --executor-cores 2 \
-    --executor-memory 2g \
-    --total-executor-cores 2 \
-    --driver-cores 1 \
-    --driver-memory 2g \
-    local:/bin/jars/bigdl-dllib-spark_3.1.2-0.14.0-SNAPSHOT.jar \
-    /host/data/iris.data 2  100 /host/data/xgboost_model_to_be_saved
+    --num-executors 2 \
+    --executor-cores 4 \
+    --executor-memory 10g \
+    --driver-memory 10g \
+    local:/bin/jars/xgboostsparksgx-1.0-SNAPSHOT-jar-with-dependencies.jar \ \
+    /host/data/xgboost 2 /host/data/model 2
