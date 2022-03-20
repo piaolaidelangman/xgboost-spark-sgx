@@ -37,8 +37,27 @@ RUN cd /opt && \
     mv spark-${SPARK_VERSION}-bin-hadoop3.2 spark && \
     rm spark-${SPARK_VERSION}-bin-hadoop3.2.tgz && \
     cp spark/conf/log4j.properties.template spark/conf/log4j.properties && \
-    echo $'\nlog4j.logger.io.netty=ERROR' >> spark/conf/log4j.properties 
+    echo $'\nlog4j.logger.io.netty=ERROR' >> spark/conf/log4j.properties && \
+    rm spark/jars/spark-core_2.12-$SPARK_VERSION.jar && \
+    rm spark/jars/spark-kubernetes_2.12-$SPARK_VERSION.jar && \
+    rm spark/jars/spark-network-common_2.12-$SPARK_VERSION.jar && \
+    rm spark/jars/hadoop-common-3.2.0.jar && \
+    rm spark/jars/slf4j-log4j12-1.7.30.jar && \
+    rm spark/jars/log4j-1.2.17.jar && \
+    wget -P /opt/spark/jars/ https://repo1.maven.org/maven2/org/apache/logging/log4j/log4j-1.2-api/2.17.1/log4j-1.2-api-2.17.1.jar && \
+    wget -P /opt/spark/jars/ https://repo1.maven.org/maven2/org/slf4j/slf4j-reload4j/1.7.35/slf4j-reload4j-1.7.35.jar && \
+    wget -P /opt/spark/jars/ https://repo1.maven.org/maven2/org/apache/logging/log4j/log4j-api/2.17.1/log4j-api-2.17.1.jar && \
+    wget -P /opt/spark/jars/ https://repo1.maven.org/maven2/org/apache/logging/log4j/log4j-core/2.17.1/log4j-core-2.17.1.jar && \
+    wget -P /opt/spark/jars/ https://repo1.maven.org/maven2/org/apache/logging/log4j/log4j-slf4j-impl/2.17.1/log4j-slf4j-impl-2.17.1.jar
 
+# spark modification
+RUN cd /opt && \
+    wget $SPARK_JAR_REPO_URL/spark-core_2.12-$SPARK_VERSION.jar && \
+    wget $SPARK_JAR_REPO_URL/spark-kubernetes_2.12-$SPARK_VERSION.jar && \
+    wget $SPARK_JAR_REPO_URL/spark-network-common_2.12-$SPARK_VERSION.jar && \
+    mv /opt/spark-core_2.12-$SPARK_VERSION.jar  /opt/spark/jars/spark-core_2.12-$SPARK_VERSION.jar && \
+    mv /opt/spark-kubernetes_2.12-$SPARK_VERSION.jar /opt/spark/jars/spark-kubernetes_2.12-$SPARK_VERSION.jar && \
+    mv /opt/spark-network-common_2.12-$SPARK_VERSION.jar /opt/spark/jars/spark-network-common_2.12-$SPARK_VERSION.jar
 # hadoop
 RUN mkdir -p /opt/src && \
     cd /opt/src && \
@@ -85,7 +104,7 @@ ARG HTTPS_PROXY_HOST
 ARG HTTPS_PROXY_PORT
 
 RUN echo "auth required pam_wheel.so use_uid" >> /etc/pam.d/su && \
-    chgrp root /etc/passwd && chmod ug+rw /etc/passwd 
+    chgrp root /etc/passwd && chmod ug+rw /etc/passwd
 
 COPY --from=tini /usr/local/bin/tini /sbin/tini
 
