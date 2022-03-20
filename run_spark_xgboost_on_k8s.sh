@@ -10,13 +10,14 @@ ${SPARK_HOME}/bin/spark-submit \
     --conf spark.kubernetes.container.image=xgboost-spark-sgx \
     --conf spark.kubernetes.authenticate.driver.serviceAccountName=spark \
     --conf spark.kubernetes.executor.deleteOnTermination=false \
-    --conf spark.kubernetes.driver.podTemplateFile=./executor.yaml \
+    --conf spark.kubernetes.driver.podTemplateFile=./driver.yaml \
     --conf spark.kubernetes.executor.podTemplateFile=./executor.yaml \
     --conf spark.kubernetes.file.upload.path=file:///tmp \
+    --conf spark.executorEnv.SGX_MEM_SIZE="16GB" \
     --conf spark.task.cpus=2 \
     --num-executors 2 \
     --executor-cores 4 \
     --executor-memory 10g \
-    --driver-memory 10g \
+    --driver-memory 4g \
     local:/bin/jars/xgboostsparksgx-1.0-SNAPSHOT-jar-with-dependencies.jar \ \
-    /host/data/xgboost 2 /host/data/model 2
+    /host/data/xgboost 2 /host/data/model LDlxjm0y3HdGFniIGviJnMJbmFI+lt3dfIVyPJm1YSY= 2

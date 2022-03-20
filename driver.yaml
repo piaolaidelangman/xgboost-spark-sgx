@@ -14,22 +14,22 @@ spec:
     - name: sgx-provision
       mountPath: /dev/sgx/provision
     - name: data-exchange
-      mountPath: /opt/occlum_spark/
-    # - name: xgboost-data
-    #   mountPath: /opt/occlum_spark/data
+      mountPath: /opt/occlum_spark/data
+    - name: xgboost-data
+      mountPath: /opt/occlum_spark/data
     securityContext:
       privileged: true
   env:
-    # - name: SGX_MEM_SIZE
-    #   value: "32GB"
+    - name: SGX_MEM_SIZE
+      value: "10GB"
     - name: SGX_THREAD
       value: 2048
     - name: SGX_HEAP
-      value: "20GB"
+      value: "2GB"
     - name: SGX_KERNEL_HEAP
       value: "2GB"
     - name: SGX_MMAP
-      value: "12GB"
+      value: "6GB"
   volumes:
   - name: sgx-enclave
     hostPath:
@@ -40,6 +40,6 @@ spec:
   - name: data-exchange
     hostPath:
       path: /tmp
-  # - name: xgboost-data
-  #   hostPath:
-  #     path: /your_local_xgboost_encrypted_path
+  - name: xgboost-data
+    hostPath:
+      path: /your_local_xgboost_encrypted_path
