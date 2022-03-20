@@ -93,7 +93,7 @@ object xgbClassifierTrainingExample {
     val xgbClassificationModel = xgbClassifier.fit(train)
     xgbClassificationModel.save(modelsave_path)
 
-    sc.ttop()
+    sc.stop()
     spark.stop()
   }
 }
