@@ -122,15 +122,15 @@ run_spark_xgboost_train() {
                 -Divy.home="/tmp/.ivy" \
                 -Dos.name="Linux" \
                 -cp "$SPARK_HOME/conf/:$SPARK_HOME/jars/*:/bin/jars/*" \
-                -Xmx30g -Xms30g org.apache.spark.deploy.SparkSubmit \
+                -Xmx24g -Xms24g org.apache.spark.deploy.SparkSubmit \
                 --master local[16] \
                 --conf spark.task.cpus=4 \
                 --conf spark.task.maxFailures=8 \
                 --class xgboostsparksgx.xgbClassifierTrainingExample \
-                --num-executors 8 \
-                --executor-cores 2 \
-                --executor-memory 2G \
-                --driver-memory 10G \
+                --num-executors 2 \
+                --executor-cores 4 \
+                --executor-memory 10G \
+                --driver-memory 4G \
                 /bin/jars/xgboostsparksgx-1.0-SNAPSHOT-jar-with-dependencies.jar \
                 /host/data/xgboost 2 /host/data/model LDlxjm0y3HdGFniIGviJnMJbmFI+lt3dfIVyPJm1YSY= 1
 }
