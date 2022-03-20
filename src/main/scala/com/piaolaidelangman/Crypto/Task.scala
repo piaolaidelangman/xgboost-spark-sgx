@@ -1,27 +1,18 @@
 package xgboostsparksgx
 
-import org.apache.spark.sql.Row
-
-import java.util.Base64
 import java.util.Arrays.copyOfRange
 import java.time.Instant
 import java.io.{ByteArrayOutputStream, DataOutputStream, ByteArrayInputStream, DataInputStream}
 import java.security.SecureRandom
 import javax.crypto.{Cipher, SecretKeyFactory, Mac}
-import javax.crypto.spec.{GCMParameterSpec, IvParameterSpec, PBEKeySpec, SecretKeySpec}
-
+import javax.crypto.spec.{IvParameterSpec, SecretKeySpec}
+/**
+ * @author diankun.an
+ */
 class Task extends Serializable{
-  def rowToLibsvm(row: Row): String = {
-    0 until row.length flatMap {
-      case 0 => Some(row(0).toString)
-      // case i if row(i) == null => None
-      case i if row(i) == null => Some("-999")
-      case i => Some( (if (i < 14) row(i) else java.lang.Long.parseLong(row(i).toString, 16)).toString )
-    } mkString " "
-  }
-  
+
   def encryptBytesWithJavaAESCBC(content: Array[Byte], key: String): Array[Byte] = {
-    val secret = Task.decoder.decode(key.getBytes)
+    val secret = key.getBytes
     //  get IV
     val random = new SecureRandom()
     val initializationVector: Array[Byte] = new Array[Byte](16)
@@ -75,14 +66,13 @@ class Task extends Serializable{
     if (hmac == null || hmac.length != 32) {
         throw new CryptoException("Hmac must be 256 bits")
     }
-    Task.encoder.encodeToString(outByteStream.toByteArray()).getBytes
+    outByteStream.toByteArray()
   }
 
   def decryptBytesWithJavaAESCBC(content: Array[Byte], key: String): String = {
-    val secret = Task.decoder.decode(key.getBytes)
-    val bytes = Task.decoder.decode(new String(content))
+    val secret = key.getBytes
 
-    val inputStream: ByteArrayInputStream = new ByteArrayInputStream(bytes)
+    val inputStream: ByteArrayInputStream = new ByteArrayInputStream(content)
     val dataStream: DataInputStream = new DataInputStream(inputStream)
 
     val version: Byte = dataStream.readByte()
@@ -96,7 +86,7 @@ class Task extends Serializable{
     val initializationVector: Array[Byte] = read(dataStream, 16)
     val ivParameterSpec = new IvParameterSpec(initializationVector)
 
-    val cipherText: Array[Byte] = read(dataStream, bytes.length - 57)
+    val cipherText: Array[Byte] = read(dataStream, content.length - 57)
 
     val hmac: Array[Byte] = read(dataStream, 32)
     if(initializationVector.length != 16){
@@ -124,9 +114,4 @@ class Task extends Serializable{
     }
     retval
   }
-}
-
-object Task {
-  val decoder = Base64.getDecoder()
-  val encoder = Base64.getEncoder()
 }

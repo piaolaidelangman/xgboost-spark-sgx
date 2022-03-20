@@ -3,11 +3,10 @@ package xgboostsparksgx
 import scala.io.Source
 
 import java.nio.file.{Files, Paths}
-import java.util.stream.Stream
 import java.util.concurrent.locks.{Lock, ReentrantLock}
-import java.util.Base64
-
-
+/**
+ * @author diankun.an
+ */
 object SplitAndEncrypt {
 
   def main(args: Array[String]): Unit = {

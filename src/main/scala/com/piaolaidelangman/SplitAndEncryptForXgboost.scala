@@ -3,11 +3,10 @@ package xgboostsparksgx
 import scala.io.Source
 
 import java.nio.file.{Files, Paths}
-import java.util.stream.Stream
 import java.util.concurrent.locks.{Lock, ReentrantLock}
-import java.util.Base64
-
-
+/**
+ * @author diankun.an
+ */
 object SplitAndEncryptForXgboost {
 
   def main(args: Array[String]): Unit = {
@@ -35,7 +34,6 @@ object SplitAndEncryptForXgboost {
 
     val source = Source.fromFile(inputFile)
     val content = source.getLines
-    // val head = content.take(1).mkString + "\n" // Csv's head
 
     val linesPerFile: Long = numLines / splitNum  // lines per split file
 
@@ -77,19 +75,3 @@ object SplitAndEncryptForXgboost {
     println(s"Encrypt time elapsed $cost ms.")
   }
 }
-
-// var inputFile = "/home/sdp/diankun/data/xgboost_data"
-// import scala.io.Source
-// val source = Source.fromFile(inputFile)
-// val content = source.getLines
-
-// content.take(1).map(_.split("\t")).map{
-//     row=>{
-//         // var row =  x.split("\t")
-//         0 until row.length flatMap {
-//         case 0 => Some(row(0).toString)
-//         case i if row(i) == "" => Some("-999")
-//         case i => Some( (if (i < 14) row(i) else java.lang.Long.parseLong(row(i).toString, 16)).toString )
-//         } mkString ","
-//     }
-// }.mkString("\n")
