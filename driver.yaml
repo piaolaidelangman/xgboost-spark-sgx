@@ -41,5 +41,7 @@ spec:
     hostPath:
       path: /tmp
   - name: xgboost-data
-    hostPath:
-      path: /your_local_xgboost_encrypted_path
+    nfs: 
+        # URL for the NFS server
+        server: 
+        path: 
