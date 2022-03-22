@@ -117,10 +117,25 @@ RUN cd /opt/src && \
         -Dhttps.proxyPort=$HTTPS_PROXY_PORT" && \
     /opt/apache-maven-3.6.3/bin/mvn -T 16 -DskipTests=true clean package
 
+# hive
+RUN cd /opt/src && \
+    git clone https://github.com/analytics-zoo/hive.git && \
+    cd hive && \
+    git checkout branch-2.3.7-ppml && \
+    cd ql && \
+    export MAVEN_OPTS="-Xmx2g -XX:ReservedCodeCacheSize=512m \
+        -Dhttp.proxyHost=$HTTP_PROXY_HOST \
+        -Dhttp.proxyPort=$HTTP_PROXY_PORT \
+        -Dhttps.proxyHost=$HTTPS_PROXY_HOST \
+        -Dhttps.proxyPort=$HTTPS_PROXY_PORT" && \
+    /opt/apache-maven-3.6.3/bin/mvn -T 16 -DskipTests=true clean package && \
+    mv /opt/src/hive/ql/target/hive-exec-2.3.7-core.jar /opt/spark/jars/hive-exec-2.3.7-core.jar
+
 # Remove fork with libhadoop.so and spark-network-common.jar
 RUN wget https://sourceforge.net/projects/analytics-zoo/files/analytics-zoo-data/libhadoop.so -P /opt/ && \
     cp -f /opt/src/hadoop/hadoop-common-project/hadoop-common/target/hadoop-common-${HADOOP_VERSION}.jar ${SPARK_HOME}/jars && \
     rm -rf /opt/src
+
 
 FROM occlum/occlum:0.27.0-ubuntu20.04 as ppml
 
@@ -154,9 +169,17 @@ RUN apt-get update && \
 COPY --from=bigdl /opt/spark /opt/spark
 COPY --from=bigdl /opt/libhadoop.so /opt/libhadoop.so
 
+# Prepare BigDL
+RUN cd /opt && \
+    wget https://raw.githubusercontent.com/intel-analytics/analytics-zoo/bigdl-2.0/docker/hyperzoo/download-bigdl.sh && \
+    chmod a+x ./download-bigdl.sh && \
+    ./download-bigdl.sh && \
+    rm bigdl*.zip
+
+
 # Copy scripts & other files
-ADD target/xgboostsparksgx-1.0-SNAPSHOT-jar-with-dependencies.jar /opt
 ADD ./run_spark_on_occlum_glibc.sh /opt/run_spark_on_occlum_glibc.sh
+ADD ./log4j2.xml /opt/spark/conf/log4j2.xml
 
 COPY ./entrypoint.sh /opt/
 
