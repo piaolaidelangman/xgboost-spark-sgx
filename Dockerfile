@@ -117,44 +117,10 @@ RUN cd /opt/src && \
         -Dhttps.proxyPort=$HTTPS_PROXY_PORT" && \
     /opt/apache-maven-3.6.3/bin/mvn -T 16 -DskipTests=true clean package
 
-# hive
-RUN cd /opt/src && \
-    git clone https://github.com/analytics-zoo/hive.git && \
-    cd hive && \
-    git checkout branch-2.3.7-ppml && \
-    cd ql && \
-    export MAVEN_OPTS="-Xmx2g -XX:ReservedCodeCacheSize=512m \
-        -Dhttp.proxyHost=$HTTP_PROXY_HOST \
-        -Dhttp.proxyPort=$HTTP_PROXY_PORT \
-        -Dhttps.proxyHost=$HTTPS_PROXY_HOST \
-        -Dhttps.proxyPort=$HTTPS_PROXY_PORT" && \
-    /opt/apache-maven-3.6.3/bin/mvn -T 16 -DskipTests=true clean package && \
-    mv /opt/src/hive/ql/target/hive-exec-2.3.7-core.jar /opt/spark/jars/hive-exec-2.3.7-core.jar
-
 # Remove fork with libhadoop.so and spark-network-common.jar
 RUN wget https://sourceforge.net/projects/analytics-zoo/files/analytics-zoo-data/libhadoop.so -P /opt/ && \
     cp -f /opt/src/hadoop/hadoop-common-project/hadoop-common/target/hadoop-common-${HADOOP_VERSION}.jar ${SPARK_HOME}/jars && \
     rm -rf /opt/src
-
-# sbt
-RUN apt-get update && \
-    apt-get install apt-transport-https curl gnupg -yqq && \
-    echo "deb https://repo.scala-sbt.org/scalasbt/debian all main" | tee /etc/apt/sources.list.d/sbt.list && \
-    echo "deb https://repo.scala-sbt.org/scalasbt/debian /" | tee /etc/apt/sources.list.d/sbt_old.list && \
-    curl -sL "https://keyserver.ubuntu.com/pks/lookup?op=get&search=0x2EE0EA64E40A89B84B2DF73499E82A75642AC823" | gpg --no-default-keyring --keyring gnupg-ring:/etc/apt/trusted.gpg.d/scalasbt-release.gpg --import && \
-    chmod 644 /etc/apt/trusted.gpg.d/scalasbt-release.gpg && \
-    apt-get update && \
-    apt-get install sbt
-
-# Prepare tpch
-## 2.11.7 2.12.1 for scala version
-## 2.4.0 3.1.2 for spark version
-RUN cd /opt && \
-    git clone https://github.com/intel-analytics/zoo-tutorials.git && \
-    cd zoo-tutorials/tpch-spark && \
-    sed -i 's/2.11.7/2.12.1/g' tpch.sbt && \
-    sed -i 's/2.4.0/3.1.2/g' tpch.sbt && \
-    sbt package
 
 FROM occlum/occlum:0.27.0-ubuntu20.04 as ppml
 
@@ -179,30 +145,6 @@ RUN echo "auth required pam_wheel.so use_uid" >> /etc/pam.d/su && \
 
 COPY --from=tini /usr/local/bin/tini /sbin/tini
 
-# Install occlum from package
-# RUN apt-get update && \
-#     DEBIAN_FRONTEND="noninteractive" apt-get install -y --no-install-recommends \
-#         build-essential ca-certificates openjdk-11-jdk \
-#         curl tzdata wget netcat gnupg2 jq make gdb libfuse-dev libtool \
-#         libprotobuf-c-dev protobuf-c-compiler libcurl4-openssl-dev libprotobuf-dev unzip
-# # Add 01.org & key
-# RUN echo 'deb [arch=amd64] https://download.01.org/intel-sgx/sgx_repo/ubuntu bionic main' | tee /etc/apt/sources.list.d/intelsgx.list && \
-#     wget -qO - https://download.01.org/intel-sgx/sgx_repo/ubuntu/intel-sgx-deb.key | apt-key add -
-
-# RUN echo 'deb [arch=amd64] https://occlum.io/occlum-package-repos/debian bionic main' | tee /etc/apt/sources.list.d/occlum.list && \
-#     wget -qO - https://occlum.io/occlum-package-repos/debian/public.key | apt-key add -
-
-# RUN apt-get update && \
-#     DEBIAN_FRONTEND="noninteractive" apt-get install -y --no-install-recommends \
-#         build-essential ca-certificates openjdk-11-jdk curl wget netcat net-tools \
-#         gnupg2 vim jq make gdb libfuse-dev libtool \
-#         libsgx-dcap-ql libsgx-epid libsgx-urts libsgx-quote-ex libsgx-uae-service \
-#         libsgx-dcap-quote-verify-dev \
-#         occlum && \
-#     apt-get clean
-
-# RUN echo "source /etc/profile" >> $HOME/.bashrc
-
 RUN apt-get update && \
     DEBIAN_FRONTEND="noninteractive" apt-get install -y --no-install-recommends \
         openjdk-11-jdk && \
@@ -211,16 +153,6 @@ RUN apt-get update && \
 # prepare Spark
 COPY --from=bigdl /opt/spark /opt/spark
 COPY --from=bigdl /opt/libhadoop.so /opt/libhadoop.so
-
-# Prepare BigDL
-RUN cd /opt && \
-    wget https://raw.githubusercontent.com/intel-analytics/analytics-zoo/bigdl-2.0/docker/hyperzoo/download-bigdl.sh && \
-    chmod a+x ./download-bigdl.sh && \
-    ./download-bigdl.sh && \
-    rm bigdl*.zip
-
-# Prepare Tpc-H
-COPY --from=bigdl /opt/zoo-tutorials/tpch-spark/target/scala-2.12/spark-tpc-h-queries_2.12-1.0.jar $SPARK_HOME/jars
 
 # Copy scripts & other files
 ADD target/xgboostsparksgx-1.0-SNAPSHOT-jar-with-dependencies.jar /opt
