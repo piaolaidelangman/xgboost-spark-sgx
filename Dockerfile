@@ -180,6 +180,7 @@ RUN cd /opt && \
 # Copy scripts & other files
 ADD ./run_spark_on_occlum_glibc.sh /opt/run_spark_on_occlum_glibc.sh
 ADD ./log4j2.xml /opt/spark/conf/log4j2.xml
+ADD target/xgboostsparksgx-1.0-SNAPSHOT-jar-with-dependencies.jar /opt
 
 COPY ./entrypoint.sh /opt/
 
