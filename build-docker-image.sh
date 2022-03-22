@@ -2,7 +2,7 @@ export HTTP_PROXY_HOST=
 export HTTP_PROXY_PORT=
 export HTTPS_PROXY_HOST=
 export HTTPS_PROXY_PORT=
-export $SPARK_JAR_REPO_URL=
+export SPARK_JAR_REPO_URL=
 
 sudo docker build \
     --build-arg http_proxy=http://$HTTP_PROXY_HOST:$HTTP_PROXY_PORT \
