@@ -1,9 +1,12 @@
+ARG SPARK_VERSION=3.1.2
+ARG HADOOP_VERSION=3.2.0
+
 FROM krallin/ubuntu-tini AS tini
 
 FROM ubuntu:20.04 as bigdl
 
-ARG SPARK_VERSION=3.1.2
-ARG HADOOP_VERSION=3.2.0
+ARG SPARK_VERSION
+ARG HADOOP_VERSION
 ARG SPARK_SCALA_VERSION=2.12
 ENV HADOOP_VERSION=${HADOOP_VERSION}
 ENV SPARK_VERSION=${SPARK_VERSION}
@@ -68,9 +71,8 @@ RUN cd /opt && \
     wget https://github.com/apache/spark/archive/refs/tags/v$SPARK_VERSION.zip && \
     unzip v$SPARK_VERSION.zip && \
     rm v$SPARK_VERSION.zip && \
-    mv spark-$SPARK_VERSION spark-source && \
-    cd spark-source && \
-    cp -r /opt/spark/bin . && \
+    mv /opt/spark-$SPARK_VERSION /opt/spark-source && \
+    cp -r /opt/spark/bin /opt/spark-source && \
     cd /opt/spark && \
     mkdir /opt/spark/test-jars && \
     cd /opt/spark/test-jars && \
@@ -158,9 +160,9 @@ RUN cd /opt && \
 
 FROM occlum/occlum:0.27.0-ubuntu20.04 as ppml
 
-ARG BIGDL_VERSION=2.0.0
-ARG SPARK_VERSION=3.1.2
-ARG HADOOP_VERSION=3.2.0
+ARG BIGDL_VERSION=2.1.0-SNAPSHOT
+ARG SPARK_VERSION
+ARG HADOOP_VERSION
 ENV HADOOP_VERSION=${HADOOP_VERSION}
 ENV SPARK_VERSION=${SPARK_VERSION}
 ENV SPARK_HOME=/opt/spark
@@ -211,6 +213,7 @@ RUN apt-get update && \
 # prepare Spark
 COPY --from=bigdl /opt/spark /opt/spark
 COPY --from=bigdl /opt/libhadoop.so /opt/libhadoop.so
+COPY --from=bigdl /opt/spark-source /opt/spark-source
 
 # Prepare BigDL
 RUN cd /opt && \

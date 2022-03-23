@@ -7,27 +7,79 @@ occlum_glibc=/opt/occlum/glibc/lib
 # occlum-node IP
 HOST_IP=`cat /etc/hosts | grep $HOSTNAME | awk '{print $1}'`
 
+check_sgx_dev() {
+    if [ -c "/dev/sgx/enclave" ]; then
+        echo "/dev/sgx/enclave is ready"
+    elif [ -c "/dev/sgx_enclave" ]; then
+        echo "/dev/sgx/enclave not ready, try to link to /dev/sgx_enclave"
+        mkdir -p /dev/sgx
+        ln -s /dev/sgx_enclave /dev/sgx/enclave
+    else
+        echo "both /dev/sgx/enclave /dev/sgx_enclave are not ready, please check the kernel and driver"
+    fi
+
+    if [ -c "/dev/sgx/provision" ]; then
+        echo "/dev/sgx/provision is ready"
+    elif [ -c "/dev/sgx_provision" ]; then
+        echo "/dev/sgx/provision not ready, try to link to /dev/sgx_provision"
+        mkdir -p /dev/sgx
+        ln -s /dev/sgx_provision /dev/sgx/provision
+    else
+        echo "both /dev/sgx/provision /dev/sgx_provision are not ready, please check the kernel and driver"
+    fi
+
+    ls -al /dev/sgx
+}
+
 init_instance() {
+    # check and fix sgx device
+    check_sgx_dev
     # Init Occlum instance
     cd /opt
     # check if occlum_spark exists
     [[ -d occlum_spark ]] || mkdir occlum_spark
     cd occlum_spark
+    /opt/occlum/start_aesm.sh
     occlum init
     new_json="$(jq '.resource_limits.user_space_size = "SGX_MEM_SIZE" |
-        .resource_limits.max_num_of_threads = 512 |
-        .process.default_heap_size = "512MB" |
-        .resource_limits.kernel_space_heap_size="1024MB" |
-        .process.default_mmap_size = "28000MB" |
+        .resource_limits.max_num_of_threads = "SGX_THREAD" |
+        .process.default_heap_size = "SGX_HEAP" |
+        .resource_limits.kernel_space_heap_size="SGX_KERNEL_HEAP" |
         .entry_points = [ "/usr/lib/jvm/java-11-openjdk-amd64/bin" ] |
         .env.untrusted = [ "DMLC_TRACKER_URI", "SPARK_DRIVER_URL", "SPARK_TESTING" ] |
         .env.default = [ "LD_LIBRARY_PATH=/usr/lib/jvm/java-11-openjdk-amd64/lib/server:/usr/lib/jvm/java-11-openjdk-amd64/lib:/usr/lib/jvm/java-11-openjdk-amd64/../lib:/lib","SPARK_CONF_DIR=/bin/conf","SPARK_ENV_LOADED=1","PYTHONHASHSEED=0","SPARK_HOME=/bin","SPARK_SCALA_VERSION=2.12","SPARK_JARS_DIR=/bin/jars","LAUNCH_CLASSPATH=/bin/jars/*",""]' Occlum.json)" && \
     echo "${new_json}" > Occlum.json
     echo "SGX_MEM_SIZE ${SGX_MEM_SIZE}"
+
+    if [[ -z "$META_SPACE" ]]; then
+        echo "META_SPACE not set, using default value 256m"
+        META_SPACE=256m
+    else
+        echo "META_SPACE=$META_SPACE"
+    fi
+
     if [[ -z "$SGX_MEM_SIZE" ]]; then
         sed -i "s/SGX_MEM_SIZE/20GB/g" Occlum.json
     else
         sed -i "s/SGX_MEM_SIZE/${SGX_MEM_SIZE}/g" Occlum.json
+    fi
+
+    if [[ -z "$SGX_THREAD" ]]; then
+        sed -i "s/\"SGX_THREAD\"/512/g" Occlum.json
+    else
+        sed -i "s/\"SGX_THREAD\"/${SGX_THREAD}/g" Occlum.json
+    fi
+
+    if [[ -z "$SGX_HEAP" ]]; then
+        sed -i "s/SGX_HEAP/512MB/g" Occlum.json
+    else
+        sed -i "s/SGX_HEAP/${SGX_HEAP}/g" Occlum.json
+    fi
+
+    if [[ -z "$SGX_KERNEL_HEAP" ]]; then
+        sed -i "s/SGX_KERNEL_HEAP/1GB/g" Occlum.json
+    else
+        sed -i "s/SGX_KERNEL_HEAP/${SGX_KERNEL_HEAP}/g" Occlum.json
     fi
 }
 
@@ -78,7 +130,7 @@ run_spark_pi() {
     build_spark
     echo -e "${BLUE}occlum run spark Pi${NC}"
     occlum run /usr/lib/jvm/java-11-openjdk-amd64/bin/java \
-                -XX:-UseCompressedOops -XX:MaxMetaspaceSize=256m \
+                -XX:-UseCompressedOops -XX:MaxMetaspaceSize=$META_SPACE \
                 -XX:ActiveProcessorCount=4 \
                 -Divy.home="/tmp/.ivy" \
                 -Dos.name="Linux" \
@@ -91,24 +143,23 @@ run_spark_pi() {
 run_spark_xgboost() {
     init_instance spark
     build_spark
-    echo -e "occlum run xgboost spark "
+    echo -e "${BLUE}occlum run BigDL Spark XGBoost${NC}"
     occlum run /usr/lib/jvm/java-11-openjdk-amd64/bin/java \
-                -XX:-UseCompressedOops -XX:MaxMetaspaceSize=1024m \
+                -XX:-UseCompressedOops -XX:MaxMetaspaceSize=$META_SPACE \
                 -XX:ActiveProcessorCount=8 \
                 -Divy.home="/tmp/.ivy" \
                 -Dos.name="Linux" \
                 -cp "$SPARK_HOME/conf/:$SPARK_HOME/jars/*:/bin/jars/*" \
-                -Xmx24g -Xms24g org.apache.spark.deploy.SparkSubmit \
+                -Xmx18g -Xms18g org.apache.spark.deploy.SparkSubmit \
                 --master local[16] \
-                --conf spark.task.cpus=4 \
-                --conf spark.task.maxFailures=8 \
-                --class xgboostsparksgx.xgbClassifierTrainingExample \
+                --conf spark.task.cpus=8 \
+                --class com.intel.analytics.bigdl.dllib.examples.nnframes.xgboost.xgbClassifierTrainingExampleOnCriteoClickLogsDataset \
                 --num-executors 2 \
-                --executor-cores 4 \
-                --executor-memory 10G \
-                --driver-memory 4G \
-                /bin/jars/xgboostsparksgx-1.0-SNAPSHOT-jar-with-dependencies.jar \
-                /host/data/xgboost 2 /host/data/model LDlxjm0y3HdGFniIGviJnMJbmFI+lt3dfIVyPJm1YSY= 1
+                --executor-cores 2 \
+                --executor-memory 9G \
+                --driver-memory 2G \
+                /bin/jars/bigdl-dllib-spark_3.1.2-2.1.0-SNAPSHOT.jar \
+                /host/data /host/data/model 2 100 2
 }
 
 
