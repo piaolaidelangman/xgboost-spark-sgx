@@ -19,4 +19,4 @@ ${SPARK_HOME}/bin/spark-submit \
     --executor-memory 10g \
     --driver-memory 10g \
     local:/bin/jars/xgboostsparksgx-1.0-SNAPSHOT-jar-with-dependencies.jar \ \
-    /host/data/xgboost 2 /host/data/model 2
+    /host/data/xgboost 2 /host/data/model LDlxjm0y3HdGFniIGviJnMJbmFI+lt3dfIVyPJm1YSY= 1
