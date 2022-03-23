@@ -33,7 +33,6 @@ RUN cd /opt && \
     tar -zxvf apache-maven-3.6.3-bin.tar.gz
 
 # spark
-# TODO change to build from source instead of download from spark binary
 RUN cd /opt && \
     wget https://archive.apache.org/dist/spark/spark-${SPARK_VERSION}/spark-${SPARK_VERSION}-bin-hadoop3.2.tgz && \
     tar -zxvf spark-${SPARK_VERSION}-bin-hadoop3.2.tgz && \
@@ -118,20 +117,6 @@ RUN cd /opt/src && \
         -Dhttps.proxyHost=$HTTPS_PROXY_HOST \
         -Dhttps.proxyPort=$HTTPS_PROXY_PORT" && \
     /opt/apache-maven-3.6.3/bin/mvn -T 16 -DskipTests=true clean package
-
-# hive
-#RUN cd /opt/src && \
-#    git clone https://github.com/analytics-zoo/hive.git && \
-#    cd hive && \
-#    git checkout branch-2.3.7-ppml && \
-#    cd ql && \
-#    export MAVEN_OPTS="-Xmx2g -XX:ReservedCodeCacheSize=512m \
-#        -Dhttp.proxyHost=$HTTP_PROXY_HOST \
-#        -Dhttp.proxyPort=$HTTP_PROXY_PORT \
-#        -Dhttps.proxyHost=$HTTPS_PROXY_HOST \
-#        -Dhttps.proxyPort=$HTTPS_PROXY_PORT" && \
-#    /opt/apache-maven-3.6.3/bin/mvn -T 16 -DskipTests=true clean package && \
-#    mv /opt/src/hive/ql/target/hive-exec-2.3.7-core.jar /opt/spark/jars/hive-exec-2.3.7-core.jar
 
 # Remove fork with libhadoop.so and spark-network-common.jar
 RUN wget https://sourceforge.net/projects/analytics-zoo/files/analytics-zoo-data/libhadoop.so -P /opt/ && \
