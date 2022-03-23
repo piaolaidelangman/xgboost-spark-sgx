@@ -3,7 +3,7 @@ ARG HADOOP_VERSION=3.2.0
 
 FROM krallin/ubuntu-tini AS tini
 
-FROM ubuntu:20.04 as bigdl
+FROM ubuntu:20.04 as spark
 
 ARG SPARK_VERSION
 ARG HADOOP_VERSION
@@ -165,9 +165,9 @@ RUN apt-get update && \
     apt-get clean
 
 # prepare Spark
-COPY --from=bigdl /opt/spark /opt/spark
-COPY --from=bigdl /opt/libhadoop.so /opt/libhadoop.so
-COPY --from=bigdl /opt/spark-source /opt/spark-source
+COPY --from=spark /opt/spark /opt/spark
+COPY --from=spark /opt/libhadoop.so /opt/libhadoop.so
+COPY --from=spark /opt/spark-source /opt/spark-source
 
 # Copy scripts & other files
 ADD ./run_spark_on_occlum_glibc.sh /opt/run_spark_on_occlum_glibc.sh
