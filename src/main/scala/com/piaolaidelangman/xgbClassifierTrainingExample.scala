@@ -13,7 +13,6 @@ object xgbClassifierTrainingExample {
 
   def main(args: Array[String]): Unit = {
 
-    val sc = new SparkContext()
     val spark = SparkSession.builder().getOrCreate()
     import spark.implicits._
 
@@ -24,7 +23,7 @@ object xgbClassifierTrainingExample {
     val secret = args(3)
     val num_workers = args(4).toInt
 
-    var decryption = sc.binaryFiles(input_path)
+    var decryption = spark.sparkContext.binaryFiles(input_path)
       .map{ case (name, bytesData) => {
         task.decryptBytesWithJavaAESCBC(bytesData.toArray, secret)
       }}
@@ -93,7 +92,6 @@ object xgbClassifierTrainingExample {
     val xgbClassificationModel = xgbClassifier.fit(train)
     xgbClassificationModel.save(modelsave_path)
 
-    sc.stop()
     spark.stop()
   }
 }
