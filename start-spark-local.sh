@@ -12,8 +12,7 @@ sudo docker run -it \
 	-e LOCAL_IP=$LOCAL_IP \
 	-e SGX_MEM_SIZE=24GB \
 	-e SGX_THREAD=512 \
-	-e SGX_HEAP=512MB \
+	-e SGX_HEAP=16GB \
 	-e SGX_KERNEL_HEAP=1GB \
-	-e SGX_MMAP=16GB \
 	xgboost-spark-sgx:1.0.0 \
 	bash /opt/run_spark_on_occlum_glibc.sh $1 && tail -f /dev/null
