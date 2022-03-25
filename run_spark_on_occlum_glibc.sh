@@ -118,10 +118,9 @@ build_spark() {
     cp -rf /etc/group image/etc/
     cp -rf /etc/nsswitch.conf image/etc/
 
-    # Prepare XGBoost And Spark
+    # Prepare XGBoost and spark
     mkdir -p image/bin/jars
     cp -f /opt/xgboostsparksgx-1.0-SNAPSHOT-jar-with-dependencies.jar image/bin/jars
-    cp -rf /opt/spark-source image/opt/
     occlum build
 }
 
@@ -139,6 +138,47 @@ run_spark_pi() {
                 --jars $SPARK_HOME/examples/jars/spark-examples_2.12-3.1.2.jar,$SPARK_HOME/examples/jars/scopt_2.12-3.7.1.jar \
                 --class org.apache.spark.examples.SparkPi spark-internal
 }
+
+run_spark_xgboost() {
+    init_instance spark
+    build_spark
+    echo -e "${BLUE}occlum run BigDL Spark XGBoost${NC}"
+    occlum run /usr/lib/jvm/java-11-openjdk-amd64/bin/java \
+                -XX:-UseCompressedOops -XX:MaxMetaspaceSize=$META_SPACE \
+                -XX:ActiveProcessorCount=8 \
+                -Divy.home="/tmp/.ivy" \
+                -Dos.name="Linux" \
+                -cp "$SPARK_HOME/conf/:$SPARK_HOME/jars/*:/bin/jars/*" \
+                -Xmx18g -Xms18g org.apache.spark.deploy.SparkSubmit \
+                --master local[16] \
+                --conf spark.task.cpus=8 \
+                --class com.intel.analytics.bigdl.dllib.examples.nnframes.xgboost.xgbClassifierTrainingExampleOnCriteoClickLogsDataset \
+                --num-executors 2 \
+                --executor-cores 2 \
+                --executor-memory 9G \
+                --driver-memory 2G \
+                /bin/jars/bigdl-dllib-spark_3.1.2-2.1.0-SNAPSHOT.jar \
+                /host/data /host/data/model 2 100 2
+}
+
+
+id=$([ -f "$pid" ] && echo $(wc -l < "$pid") || echo "0")
+
+arg=$1
+case "$arg" in
+    init)
+        init_instance
+        build_spark
+        ;;
+    pi)
+        run_spark_pi
+        cd ../
+        ;;
+    xgboost)
+        run_spark_xgboost
+        cd ../
+        ;;
+esac
 
 run_spark_xgboost() {
     init_instance spark
@@ -163,22 +203,3 @@ run_spark_xgboost() {
                 /bin/jars/xgboostsparksgx-1.0-SNAPSHOT-jar-with-dependencies.jar \
                 /host/data/xgboost 2 /host/data/model LDlxjm0y3HdGFniIGviJnMJbmFI+lt3dfIVyPJm1YSY= 1
 }
-
-
-id=$([ -f "$pid" ] && echo $(wc -l < "$pid") || echo "0")
-
-arg=$1
-case "$arg" in
-    init)
-        init_instance
-        build_spark
-        ;;
-    pi)
-        run_spark_pi
-        cd ../
-        ;;
-    xgboost)
-        run_spark_xgboost
-        cd ../
-        ;;
-esac
