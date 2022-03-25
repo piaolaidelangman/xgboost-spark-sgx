@@ -16,8 +16,6 @@ spec:
         - name: aesm
           mountPath: /var/run/aesmd/aesm.socket
         - name: data-exchange
-          mountPath: /opt/occlum_spark/
-        - name: xgboost
           mountPath: /opt/occlum_spark/data
       securityContext:
         privileged: true
@@ -43,7 +41,3 @@ spec:
     - name: data-exchange
       hostPath:
         path: /tmp
-    - name: xgboost
-      nfs:
-        server: $NFS_SERVER
-        path: $NFS_PATH

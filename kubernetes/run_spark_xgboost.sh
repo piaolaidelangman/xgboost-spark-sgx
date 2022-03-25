@@ -19,5 +19,3 @@ ${SPARK_HOME}/bin/spark-submit \
     --driver-memory 10g \
     local:/bin/jars/xgboostsparksgx-1.0-SNAPSHOT-jar-with-dependencies.jar \
     /host/data/xgboost 2 /host/data/model LDlxjm0y3HdGFniIGviJnMJbmFI+lt3dfIVyPJm1YSY= 1
-
-        #--conf spark.executorEnv.SGX_MEM=16GB \
