@@ -6,7 +6,7 @@ ${SPARK_HOME}/bin/spark-submit \
     --name spark-xgboost-sgx \
     --class xgboostsparksgx.xgbClassifierTrainingExample \
     --conf spark.rpc.netty.dispatcher.numThreads=32 \
-    --conf spark.kubernetes.container.image=xgboost-spark-sgx:1.0.0 \
+    --conf spark.kubernetes.container.image=$IMAGE \
     --conf spark.kubernetes.authenticate.driver.serviceAccountName=spark \
     --conf spark.kubernetes.executor.deleteOnTermination=false \
     --conf spark.kubernetes.driver.podTemplateFile=./executor.yaml \
