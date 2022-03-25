@@ -143,22 +143,24 @@ run_spark_xgboost() {
     init_instance spark
     build_spark
     echo -e "${BLUE}occlum run BigDL Spark XGBoost${NC}"
+
     occlum run /usr/lib/jvm/java-11-openjdk-amd64/bin/java \
                 -XX:-UseCompressedOops -XX:MaxMetaspaceSize=$META_SPACE \
                 -XX:ActiveProcessorCount=8 \
                 -Divy.home="/tmp/.ivy" \
                 -Dos.name="Linux" \
                 -cp "$SPARK_HOME/conf/:$SPARK_HOME/jars/*:/bin/jars/*" \
-                -Xmx18g -Xms18g org.apache.spark.deploy.SparkSubmit \
+                -Xmx24g -Xms24g org.apache.spark.deploy.SparkSubmit \
                 --master local[16] \
-                --conf spark.task.cpus=8 \
-                --class com.intel.analytics.bigdl.dllib.examples.nnframes.xgboost.xgbClassifierTrainingExampleOnCriteoClickLogsDataset \
+                --conf spark.task.cpus=4 \
+                --conf spark.task.maxFailures=8 \
+                --class xgboostsparksgx.xgbClassifierTrainingExample \
                 --num-executors 2 \
-                --executor-cores 2 \
-                --executor-memory 9G \
-                --driver-memory 2G \
-                /bin/jars/bigdl-dllib-spark_3.1.2-2.1.0-SNAPSHOT.jar \
-                /host/data /host/data/model 2 100 2
+                --executor-cores 4 \
+                --executor-memory 10G \
+                --driver-memory 4G \
+                /bin/jars/xgboostsparksgx-1.0-SNAPSHOT-jar-with-dependencies.jar \
+                /host/data/xgboost 2 /host/data/model LDlxjm0y3HdGFniIGviJnMJbmFI+lt3dfIVyPJm1YSY= 1
 }
 
 
@@ -179,27 +181,3 @@ case "$arg" in
         cd ../
         ;;
 esac
-
-run_spark_xgboost() {
-    init_instance spark
-    build_spark
-    echo -e "${BLUE}occlum run BigDL Spark XGBoost${NC}"
-
-    occlum run /usr/lib/jvm/java-11-openjdk-amd64/bin/java \
-                -XX:-UseCompressedOops -XX:MaxMetaspaceSize=1024m \
-                -XX:ActiveProcessorCount=8 \
-                -Divy.home="/tmp/.ivy" \
-                -Dos.name="Linux" \
-                -cp "$SPARK_HOME/conf/:$SPARK_HOME/jars/*:/bin/jars/*" \
-                -Xmx24g -Xms24g org.apache.spark.deploy.SparkSubmit \
-                --master local[16] \
-                --conf spark.task.cpus=4 \
-                --conf spark.task.maxFailures=8 \
-                --class xgboostsparksgx.xgbClassifierTrainingExample \
-                --num-executors 2 \
-                --executor-cores 4 \
-                --executor-memory 10G \
-                --driver-memory 4G \
-                /bin/jars/xgboostsparksgx-1.0-SNAPSHOT-jar-with-dependencies.jar \
-                /host/data/xgboost 2 /host/data/model LDlxjm0y3HdGFniIGviJnMJbmFI+lt3dfIVyPJm1YSY= 1
-}

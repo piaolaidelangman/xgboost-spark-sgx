@@ -15,4 +15,4 @@ sudo docker run -it \
 	-e SGX_HEAP=32GB \
 	-e SGX_KERNEL_HEAP=1GB \
 	$IMAGE \
-	bash /opt/run_spark_on_occlum_glibc.sh $1 && tail -f /dev/null
+	bash /opt/run_spark_on_occlum_glibc.sh xgboost
