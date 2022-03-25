@@ -118,9 +118,9 @@ build_spark() {
     cp -rf /etc/group image/etc/
     cp -rf /etc/nsswitch.conf image/etc/
 
-    # Prepare XGBoost and spark
+    # Prepare XGBoost
     mkdir -p image/bin/jars
-    cp -f /opt/xgboostsparksgx-1.0-SNAPSHOT-jar-with-dependencies.jar image/bin/jars
+    cp -rf /opt/xgboostsparksgx-1.0-SNAPSHOT-jar-with-dependencies.jar image/bin/jars
     occlum build
 }
 

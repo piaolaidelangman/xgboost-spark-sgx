@@ -10,7 +10,7 @@ sudo docker run -it \
 	-v /var/run/aesmd/aesm.socket:/var/run/aesmd/aesm.socket \
 	-v data:/opt/occlum_spark/data \
 	-e LOCAL_IP=$LOCAL_IP \
-	-e SGX_MEM_SIZE=50GB \
+	-e SGX_MEM_SIZE=64GB \
 	-e SGX_THREAD=512 \
 	-e SGX_HEAP=32GB \
 	-e SGX_KERNEL_HEAP=1GB \
