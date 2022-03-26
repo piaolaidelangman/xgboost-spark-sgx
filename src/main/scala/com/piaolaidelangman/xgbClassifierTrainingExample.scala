@@ -28,7 +28,7 @@ object xgbClassifierTrainingExample {
         task.decryptBytesWithJavaAESCBC(bytesData.toArray, secret)
       }}
     val decryptionRDD = decryption.flatMap(_.split("\n"))
-    decryptionRDD.foreach(println)
+    // decryptionRDD.foreach(println)
     val columns = decryptionRDD.first.split(",").length
 
     var structFieldArray = new Array[StructField](columns)
@@ -49,6 +49,7 @@ object xgbClassifierTrainingExample {
     ))
 
     val df = spark.createDataFrame(rowRDD,schema)
+    df.show()
 
     val stringIndexer = new StringIndexer()
       .setInputCol("_c0")
