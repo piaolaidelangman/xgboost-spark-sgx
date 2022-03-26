@@ -49,8 +49,9 @@ object xgbClassifierTrainingExample {
     ))
 
     val df = spark.createDataFrame(rowRDD,schema)*/
-    val df = spark.read.format("csv").option("header",false).option("delimiter","\t").load(input_path)
+    val df = spark.read.format("csv").option("inferSchema",true).option("header",false).option("delimiter","\t").load(input_path)
     df.show()
+    df.printSchema()
 
     val stringIndexer = new StringIndexer()
       .setInputCol("_c0")
