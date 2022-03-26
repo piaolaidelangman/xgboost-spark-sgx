@@ -23,7 +23,7 @@ object xgbClassifierTrainingExample {
     val secret = args(3)
     val num_workers = args(4).toInt
 
-    var decryption = spark.sparkContext.binaryFiles(input_path)
+ /*   var decryption = spark.sparkContext.binaryFiles(input_path)
       .map{ case (name, bytesData) => {
         task.decryptBytesWithJavaAESCBC(bytesData.toArray, secret)
       }}
@@ -48,7 +48,8 @@ object xgbClassifierTrainingExample {
       }
     ))
 
-    val df = spark.createDataFrame(rowRDD,schema)
+    val df = spark.createDataFrame(rowRDD,schema)*/
+    val df = spark.read.format("csv").option("header",false).option("delimiter","\t").load(input_path)
     df.show()
 
     val stringIndexer = new StringIndexer()
@@ -57,6 +58,7 @@ object xgbClassifierTrainingExample {
       .fit(df)
     val labelTransformed = stringIndexer.transform(df).drop("_c0")
 
+    val columns=40
     var inputCols = new Array[String](columns-1)
     for(i <- 0 to columns-2){
       inputCols(i) = "_c" + (i+1).toString
@@ -76,7 +78,7 @@ object xgbClassifierTrainingExample {
       "use_external_memory" -> true,
       "allow_non_zero_for_missing" ->true,
       "cache_training_set" -> true,
-      "checkpoint_path" -> "/tmp",
+      "checkpoint_path" -> "/tmp"
       )
 
     val xgbClassifier = new XGBClassifier(xgbParam)
