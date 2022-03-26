@@ -28,6 +28,7 @@ object xgbClassifierTrainingExample {
         task.decryptBytesWithJavaAESCBC(bytesData.toArray, secret)
       }}
     val decryptionRDD = decryption.flatMap(_.split("\n"))
+    decryptionRDD.foreach(println)
     val columns = decryptionRDD.first.split(",").length
 
     var structFieldArray = new Array[StructField](columns)
