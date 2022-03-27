@@ -154,7 +154,8 @@ COPY --from=bigdl /opt/libhadoop.so /opt/libhadoop.so
 ADD ./run_spark_on_occlum_glibc.sh /opt/run_spark_on_occlum_glibc.sh
 ADD ./log4j2.xml /opt/spark/conf/log4j2.xml
 RUN mkdir $BIGDL_HOME && mkdir $BIGDL_HOME/jars && \
-    wget https://repo1.maven.org/maven2/ml/dmlc/xgboost4j-spark/0.90/xgboost4j-spark-0.90.jar -O $SPARK_HOME/jars/xgboost4j-spark-0.90.jar
+    wget https://repo1.maven.org/maven2/ml/dmlc/xgboost4j-spark/0.90/xgboost4j-spark-0.90.jar -O $SPARK_HOME/jars/xgboost4j-spark-0.90.jar && \
+    wget https://repo1.maven.org/maven2/org/scala-lang/scala-library/2.11.8/scala-library-2.11.8.jar -O $SPARK_HOME/jars/scala-library-2.11.8.jar
 ADD target/xgboostsparksgx-1.0-SNAPSHOT.jar $BIGDL_HOME/jars/
 
 COPY ./entrypoint.sh /opt/
