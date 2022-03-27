@@ -172,15 +172,16 @@ COPY --from=bigdl /opt/spark /opt/spark
 COPY --from=bigdl /opt/libhadoop.so /opt/libhadoop.so
 
 # Prepare BigDL
-RUN cd /opt && \
-    wget https://raw.githubusercontent.com/intel-analytics/analytics-zoo/bigdl-2.0/docker/hyperzoo/download-bigdl.sh && \
-    chmod a+x ./download-bigdl.sh && \
-    ./download-bigdl.sh && \
-    rm bigdl*.zip
+#RUN cd /opt && \
+#    wget https://raw.githubusercontent.com/intel-analytics/analytics-zoo/bigdl-2.0/docker/hyperzoo/download-bigdl.sh && \
+#    chmod a+x ./download-bigdl.sh && \
+#    ./download-bigdl.sh && \
+#    rm bigdl*.zip
 
 # Copy scripts & other files
 ADD ./run_spark_on_occlum_glibc.sh /opt/run_spark_on_occlum_glibc.sh
 ADD ./log4j2.xml /opt/spark/conf/log4j2.xml
+RUN mkdir $BIGDL_HOME && mkdir $BIGDL_HOME/jars
 ADD target/xgboostsparksgx-1.0-SNAPSHOT.jar $BIGDL_HOME/jars/
 
 COPY ./entrypoint.sh /opt/
