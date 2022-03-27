@@ -142,7 +142,7 @@ FROM intelanalytics/bigdl-ppml-trusted-big-data-ml-scala-occlum:2.1.0-SNAPSHOT
 #RUN rm /opt/run_spark_on_occlum_glibc.sh
 #ADD ./run_spark_on_occlum_glibc.sh /opt/run_spark_on_occlum_glibc.sh
 #ADD target/xgboostsparksgx-1.0-SNAPSHOT-jar-with-dependencies.jar /opt
-ADD target/xgboostsparksgx-1.0-SNAPSHOT.jar /opt
+ADD target/xgboostsparksgx-1.0-SNAPSHOT.jar $BIGDL_HOME/jars/
 
 RUN chmod a+x /opt/entrypoint.sh && \
     chmod a+x /opt/run_spark_on_occlum_glibc.sh
