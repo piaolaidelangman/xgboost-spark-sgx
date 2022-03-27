@@ -91,20 +91,6 @@ RUN cd /opt/src && \
         -Dhttps.proxyPort=$HTTPS_PROXY_PORT" && \
     /opt/apache-maven-3.6.3/bin/mvn -T 16 -DskipTests=true clean package
 
-# hive
-RUN cd /opt/src && \
-    git clone https://github.com/analytics-zoo/hive.git && \
-    cd hive && \
-    git checkout branch-2.3.7-ppml && \
-    cd ql && \
-    export MAVEN_OPTS="-Xmx2g -XX:ReservedCodeCacheSize=512m \
-        -Dhttp.proxyHost=$HTTP_PROXY_HOST \
-        -Dhttp.proxyPort=$HTTP_PROXY_PORT \
-        -Dhttps.proxyHost=$HTTPS_PROXY_HOST \
-        -Dhttps.proxyPort=$HTTPS_PROXY_PORT" && \
-    /opt/apache-maven-3.6.3/bin/mvn -T 16 -DskipTests=true clean package && \
-    mv /opt/src/hive/ql/target/hive-exec-2.3.7-core.jar /opt/spark/jars/hive-exec-2.3.7-core.jar
-
 # Remove fork with libhadoop.so and spark-network-common.jar
 RUN wget https://sourceforge.net/projects/analytics-zoo/files/analytics-zoo-data/libhadoop.so -P /opt/ && \
     cp -f /opt/src/hadoop/hadoop-common-project/hadoop-common/target/hadoop-common-${HADOOP_VERSION}.jar ${SPARK_HOME}/jars && \
@@ -153,10 +139,8 @@ COPY --from=bigdl /opt/libhadoop.so /opt/libhadoop.so
 # Copy scripts & other files
 ADD ./run_spark_on_occlum_glibc.sh /opt/run_spark_on_occlum_glibc.sh
 ADD ./log4j2.xml /opt/spark/conf/log4j2.xml
-RUN mkdir $BIGDL_HOME && mkdir $BIGDL_HOME/jars && \
-    wget https://repo1.maven.org/maven2/ml/dmlc/xgboost4j-spark/0.90/xgboost4j-spark-0.90.jar -O $SPARK_HOME/jars/xgboost4j-spark-0.90.jar && \
-    wget https://repo1.maven.org/maven2/org/scala-lang/scala-library/2.11.8/scala-library-2.11.8.jar -O $SPARK_HOME/jars/scala-library-2.11.8.jar
-ADD target/xgboostsparksgx-1.0-SNAPSHOT.jar $BIGDL_HOME/jars/
+RUN mkdir $BIGDL_HOME && mkdir $BIGDL_HOME/jars
+ADD target/xgboostsparksgx-1.0-SNAPSHOT-jar-with-dependencies.jar $BIGDL_HOME/jars/
 
 COPY ./entrypoint.sh /opt/
 
