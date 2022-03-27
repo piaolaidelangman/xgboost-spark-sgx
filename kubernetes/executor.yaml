@@ -6,7 +6,7 @@ metadata:
 spec:
   containers:
     - name: spark-example
-      image: $IMAGE
+      image: xgboost-spark-sgx:1.0.0
       imagePullPolicy: Never
       volumeMounts:
         - name: sgx-enclave
@@ -21,13 +21,15 @@ spec:
         privileged: true
       env:
         - name: SGX_MEM_SIZE
-          value: "30GB"
+          value: "40GB"
         - name: SGX_THREAD
-          value: "512"
+          value: "1024"
         - name: SGX_HEAP
-          value: "12GB"
+          value: "20GB"
         - name: SGX_KERNEL_HEAP
           value: "1GB"
+        - name: META_SPACE
+          value: 1024m
   volumes:
     - name: sgx-enclave
       hostPath:
@@ -39,5 +41,6 @@ spec:
       hostPath:
         path: /var/run/aesmd/aesm.socket
     - name: data-exchange
-      hostPath:
-        path: /tmp
+      nfs:
+        server:
+        path: /disk1/nfsdata

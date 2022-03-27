@@ -48,7 +48,7 @@ object xgbClassifierTrainingExample {
       }
     ))
 
-    val df = spark.createDataFrame(rowRDD,schema).repartition(8)
+    val df = spark.createDataFrame(rowRDD,schema).repartition(2)
     //val df = spark.read.format("csv").option("inferSchema",true).option("header",false).option("delimiter","\t").load(input_path)
     df.show()
     df.printSchema()
@@ -82,8 +82,7 @@ object xgbClassifierTrainingExample {
       "checkpoint_path" -> "/tmp"
       )*/
    val xgbParam = Map("tracker_conf" -> TrackerConf(0L, "scala"),
-     "eval_sets" -> Map("eval1" -> eval1, "eval2" -> eval2),
-     "missing" -> 0
+     "eval_sets" -> Map("eval1" -> eval1, "eval2" -> eval2)
    )
 
     val xgbClassifier = new XGBClassifier(xgbParam)
