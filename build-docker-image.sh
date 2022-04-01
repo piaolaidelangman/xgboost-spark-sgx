@@ -13,3 +13,4 @@ sudo docker build \
     --build-arg no_proxy=x.x.x.x \
     --build-arg SPARK_JAR_REPO_URL=$SPARK_JAR_REPO_URL \
     -t xgboost-spark-sgx:1.0.0 -f ./Dockerfile .
+
