@@ -10,9 +10,9 @@ spec:
       imagePullPolicy: Never
       volumeMounts:
         - name: sgx-enclave
-          mountPath: /dev/sgx/enclave
+          mountPath: /dev/sgx/_enclave
         - name: sgx-provision
-          mountPath: /dev/sgx/provision
+          mountPath: /dev/sgx/_provision
         - name: aesm
           mountPath: /var/run/aesmd/aesm.socket
         - name: data-exchange
