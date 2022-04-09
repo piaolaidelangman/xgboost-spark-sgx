@@ -229,8 +229,8 @@ COPY --from=bigdl /opt/zoo-tutorials/tpch-spark/target/scala-2.12/spark-tpc-h-qu
 ADD ./run_spark_on_occlum_glibc.sh /opt/run_spark_on_occlum_glibc.sh
 ADD ./sqlSuites /opt/sqlSuites
 ADD ./log4j2.xml /opt/spark/conf/log4j2.xml
-ADD target/xgboostsparksgx-1.0-SNAPSHOT-jar-with-dependencies.jar $BIGDL_HOME/jars/
-
+#ADD target/xgboostsparksgx-1.0-SNAPSHOT-jar-with-dependencies.jar $BIGDL_HOME/jars/
+ADD target/xgboostsparksgx-1.0-SNAPSHOT.jar $BIGDL_HOME/jars/
 COPY ./entrypoint.sh /opt/
 
 RUN chmod a+x /opt/entrypoint.sh && \
