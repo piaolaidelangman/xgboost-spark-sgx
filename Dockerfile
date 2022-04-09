@@ -91,11 +91,11 @@ RUN cd /opt/src && \
         -Dhttps.proxyPort=$HTTPS_PROXY_PORT" && \
     /opt/apache-maven-3.6.3/bin/mvn -T 16 -DskipTests=true clean package
 
+
 # Remove fork with libhadoop.so and spark-network-common.jar
 RUN wget https://sourceforge.net/projects/analytics-zoo/files/analytics-zoo-data/libhadoop.so -P /opt/ && \
     cp -f /opt/src/hadoop/hadoop-common-project/hadoop-common/target/hadoop-common-${HADOOP_VERSION}.jar ${SPARK_HOME}/jars && \
     rm -rf /opt/src
-
 
 FROM occlum/occlum:0.27.0-ubuntu20.04 as ppml
 
@@ -120,6 +120,7 @@ RUN echo "auth required pam_wheel.so use_uid" >> /etc/pam.d/su && \
 
 COPY --from=tini /usr/local/bin/tini /sbin/tini
 
+
 RUN apt-get update && \
     DEBIAN_FRONTEND="noninteractive" apt-get install -y --no-install-recommends \
         openjdk-11-jdk && \
@@ -128,18 +129,21 @@ RUN apt-get update && \
 # prepare Spark
 COPY --from=bigdl /opt/spark /opt/spark
 COPY --from=bigdl /opt/libhadoop.so /opt/libhadoop.so
+COPY --from=bigdl /opt/spark-source /opt/spark-source
 
 # Prepare BigDL
-#RUN cd /opt && \
-#    wget https://raw.githubusercontent.com/intel-analytics/analytics-zoo/bigdl-2.0/docker/hyperzoo/download-bigdl.sh && \
-#    chmod a+x ./download-bigdl.sh && \
-#    ./download-bigdl.sh && \
-#    rm bigdl*.zip
+RUN cd /opt && \
+    wget https://raw.githubusercontent.com/intel-analytics/analytics-zoo/bigdl-2.0/docker/hyperzoo/download-bigdl.sh && \
+    chmod a+x ./download-bigdl.sh && \
+    ./download-bigdl.sh && \
+    rm bigdl*.zip
+
+# Prepare Tpc-H
+COPY --from=bigdl /opt/zoo-tutorials/tpch-spark/target/scala-2.12/spark-tpc-h-queries_2.12-1.0.jar $SPARK_HOME/jars
 
 # Copy scripts & other files
 ADD ./run_spark_on_occlum_glibc.sh /opt/run_spark_on_occlum_glibc.sh
 ADD ./log4j2.xml /opt/spark/conf/log4j2.xml
-RUN mkdir $BIGDL_HOME && mkdir $BIGDL_HOME/jars
 ADD target/xgboostsparksgx-1.0-SNAPSHOT-jar-with-dependencies.jar $BIGDL_HOME/jars/
 
 COPY ./entrypoint.sh /opt/
@@ -148,6 +152,5 @@ RUN chmod a+x /opt/entrypoint.sh && \
     chmod a+x /opt/run_spark_on_occlum_glibc.sh
 
 ENTRYPOINT [ "/opt/entrypoint.sh" ]
-
 
 
