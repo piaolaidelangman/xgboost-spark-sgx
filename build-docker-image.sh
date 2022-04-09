@@ -1,8 +1,7 @@
-export HTTP_PROXY_HOST=
-export HTTP_PROXY_PORT=
-export HTTPS_PROXY_HOST=
-export HTTPS_PROXY_PORT=
-export SPARK_JAR_REPO_URL=
+export HTTP_PROXY_HOST=$host
+export HTTP_PROXY_PORT=$port
+export HTTPS_PROXY_HOST=$host
+export HTTPS_PROXY_PORT=$port
 
 sudo docker build \
     --build-arg http_proxy=http://$HTTP_PROXY_HOST:$HTTP_PROXY_PORT \
@@ -14,3 +13,4 @@ sudo docker build \
     --build-arg no_proxy=x.x.x.x \
     --build-arg SPARK_JAR_REPO_URL=$SPARK_JAR_REPO_URL \
     -t xgboost-spark-sgx:1.0.0 -f ./Dockerfile .
+
