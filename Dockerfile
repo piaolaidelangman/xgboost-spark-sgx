@@ -129,7 +129,6 @@ RUN apt-get update && \
 # prepare Spark
 COPY --from=bigdl /opt/spark /opt/spark
 COPY --from=bigdl /opt/libhadoop.so /opt/libhadoop.so
-COPY --from=bigdl /opt/spark-source /opt/spark-source
 
 # Prepare BigDL
 RUN cd /opt && \
@@ -137,9 +136,6 @@ RUN cd /opt && \
     chmod a+x ./download-bigdl.sh && \
     ./download-bigdl.sh && \
     rm bigdl*.zip
-
-# Prepare Tpc-H
-COPY --from=bigdl /opt/zoo-tutorials/tpch-spark/target/scala-2.12/spark-tpc-h-queries_2.12-1.0.jar $SPARK_HOME/jars
 
 # Copy scripts & other files
 ADD ./run_spark_on_occlum_glibc.sh /opt/run_spark_on_occlum_glibc.sh
