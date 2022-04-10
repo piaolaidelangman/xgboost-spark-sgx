@@ -70,14 +70,14 @@ RUN apt-get update && \
 COPY --from=bigdl /opt/spark /opt/spark
 
 # Prepare BigDL
-#RUN cd /opt && \
-#    wget https://raw.githubusercontent.com/intel-analytics/analytics-zoo/bigdl-2.0/docker/hyperzoo/download-bigdl.sh && \
-#    chmod a+x ./download-bigdl.sh && \
-#    ./download-bigdl.sh && \
-#    rm bigdl*.zip && \
-#    rm $BIGDL_HOME/jars/bigdl-*
+RUN cd /opt && \
+    wget https://raw.githubusercontent.com/intel-analytics/analytics-zoo/bigdl-2.0/docker/hyperzoo/download-bigdl.sh && \
+    chmod a+x ./download-bigdl.sh && \
+    ./download-bigdl.sh && \
+    rm bigdl*.zip && \
+    rm $BIGDL_HOME/jars/bigdl-*
 
-ADD ./bigdl-$BIGDL_VERSION /opt
+#ADD ./bigdl-$BIGDL_VERSION /opt
 # Copy scripts & other files
 ADD ./run_spark_on_occlum_glibc.sh /opt/run_spark_on_occlum_glibc.sh
 ADD target/xgboostsparksgx-1.0-SNAPSHOT.jar $BIGDL_HOME/jars/
