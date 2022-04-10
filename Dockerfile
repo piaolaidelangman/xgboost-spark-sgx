@@ -41,7 +41,7 @@ RUN cd /opt && \
     mv spark-${SPARK_VERSION}-bin-hadoop3.2 spark && \
     rm spark-${SPARK_VERSION}-bin-hadoop3.2.tgz && \
     cp spark/conf/log4j.properties.template spark/conf/log4j.properties && \
-    echo $'\nlog4j.logger.io.netty=ERROR' >> spark/conf/log4j.properties \
+    echo $'\nlog4j.logger.io.netty=ERROR' >> spark/conf/log4j.properties
 
 # spark modification
 #RUN cd /opt && \
