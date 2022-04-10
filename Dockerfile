@@ -24,25 +24,33 @@ RUN apt-get update && DEBIAN_FRONTEND="noninteractive" apt-get install -y --no-i
 
 # spark
 # TODO change to build from source instead of download from spark binary
+#RUN cd /opt && \
+#    wget https://archive.apache.org/dist/spark/spark-${SPARK_VERSION}/spark-${SPARK_VERSION}-bin-hadoop3.2.tgz && \
+#    tar -zxvf spark-${SPARK_VERSION}-bin-hadoop3.2.tgz && \
+#    mv spark-${SPARK_VERSION}-bin-hadoop3.2 spark && \
+#    rm spark-${SPARK_VERSION}-bin-hadoop3.2.tgz && \
+#    cp spark/conf/log4j.properties.template spark/conf/log4j.properties && \
+#    echo $'\nlog4j.logger.io.netty=ERROR' >> spark/conf/log4j.properties && \
+#    rm spark/jars/spark-core_2.12-$SPARK_VERSION.jar && \
+#    rm spark/jars/spark-kubernetes_2.12-$SPARK_VERSION.jar && \
+#    rm spark/jars/spark-network-common_2.12-$SPARK_VERSION.jar
+
 RUN cd /opt && \
     wget https://archive.apache.org/dist/spark/spark-${SPARK_VERSION}/spark-${SPARK_VERSION}-bin-hadoop3.2.tgz && \
     tar -zxvf spark-${SPARK_VERSION}-bin-hadoop3.2.tgz && \
     mv spark-${SPARK_VERSION}-bin-hadoop3.2 spark && \
     rm spark-${SPARK_VERSION}-bin-hadoop3.2.tgz && \
     cp spark/conf/log4j.properties.template spark/conf/log4j.properties && \
-    echo $'\nlog4j.logger.io.netty=ERROR' >> spark/conf/log4j.properties && \
-    rm spark/jars/spark-core_2.12-$SPARK_VERSION.jar && \
-    rm spark/jars/spark-kubernetes_2.12-$SPARK_VERSION.jar && \
-    rm spark/jars/spark-network-common_2.12-$SPARK_VERSION.jar
+    echo $'\nlog4j.logger.io.netty=ERROR' >> spark/conf/log4j.properties \
 
 # spark modification
-RUN cd /opt && \
-    wget $SPARK_JAR_REPO_URL/spark-core_2.12-$SPARK_VERSION.jar && \
-    wget $SPARK_JAR_REPO_URL/spark-kubernetes_2.12-$SPARK_VERSION.jar && \
-    wget $SPARK_JAR_REPO_URL/spark-network-common_2.12-$SPARK_VERSION.jar && \
-    mv /opt/spark-core_2.12-$SPARK_VERSION.jar  /opt/spark/jars/spark-core_2.12-$SPARK_VERSION.jar && \
-    mv /opt/spark-kubernetes_2.12-$SPARK_VERSION.jar /opt/spark/jars/spark-kubernetes_2.12-$SPARK_VERSION.jar && \
-    mv /opt/spark-network-common_2.12-$SPARK_VERSION.jar /opt/spark/jars/spark-network-common_2.12-$SPARK_VERSION.jar
+#RUN cd /opt && \
+#    wget $SPARK_JAR_REPO_URL/spark-core_2.12-$SPARK_VERSION.jar && \
+#    wget $SPARK_JAR_REPO_URL/spark-kubernetes_2.12-$SPARK_VERSION.jar && \
+#    wget $SPARK_JAR_REPO_URL/spark-network-common_2.12-$SPARK_VERSION.jar && \
+#    mv /opt/spark-core_2.12-$SPARK_VERSION.jar  /opt/spark/jars/spark-core_2.12-$SPARK_VERSION.jar && \
+#    mv /opt/spark-kubernetes_2.12-$SPARK_VERSION.jar /opt/spark/jars/spark-kubernetes_2.12-$SPARK_VERSION.jar && \
+#    mv /opt/spark-network-common_2.12-$SPARK_VERSION.jar /opt/spark/jars/spark-network-common_2.12-$SPARK_VERSION.jar
 
 
 FROM occlum/occlum:0.27.0-ubuntu20.04 as ppml
