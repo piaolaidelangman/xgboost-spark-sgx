@@ -76,7 +76,12 @@ RUN cd /opt && \
     wget https://raw.githubusercontent.com/intel-analytics/analytics-zoo/bigdl-2.0/docker/hyperzoo/download-bigdl.sh && \
     chmod a+x ./download-bigdl.sh && \
     ./download-bigdl.sh && \
-    rm bigdl*.zip
+    rm bigdl*.zip && \
+    rm $BIGDL_HOME/jars/bigdl-friesian-spark_3.1.2-2.1.0-SNAPSHOT.jar && \
+    rm $BIGDL_HOME/jars/bigdl-grpc-spark_3.1.2-2.1.0-SNAPSHOT.jar && \
+    rm $BIGDL_HOME/jars/bigdl-orca-spark_3.1.2-2.1.0-SNAPSHOT.jar && \
+    rm $BIGDL_HOME/jars/bigdl-ppml-spark_3.1.2-2.1.0-SNAPSHOT.jar && \
+    rm $BIGDL_HOME/jars/bigdl-serving-spark_3.1.2-2.1.0-SNAPSHOT.jar
 
 #ADD ./bigdl-$BIGDL_VERSION /opt
 # Copy scripts & other files
