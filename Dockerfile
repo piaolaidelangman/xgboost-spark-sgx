@@ -61,22 +61,23 @@ RUN echo "auth required pam_wheel.so use_uid" >> /etc/pam.d/su && \
 
 COPY --from=tini /usr/local/bin/tini /sbin/tini
 
-RUN apt-get update && \
-    DEBIAN_FRONTEND="noninteractive" apt-get install -y --no-install-recommends \
-        openjdk-11-jdk && \
-    apt-get clean
+#RUN apt-get update && \
+#    DEBIAN_FRONTEND="noninteractive" apt-get install -y --no-install-recommends \
+#        openjdk-11-jdk && \
+#    apt-get clean
 
 # prepare Spark
 COPY --from=bigdl /opt/spark /opt/spark
 
 # Prepare BigDL
-RUN cd /opt && \
-    wget https://raw.githubusercontent.com/intel-analytics/analytics-zoo/bigdl-2.0/docker/hyperzoo/download-bigdl.sh && \
-    chmod a+x ./download-bigdl.sh && \
-    ./download-bigdl.sh && \
-    rm bigdl*.zip && \
-    rm $BIGDL_HOME/jars/bigdl-*
+#RUN cd /opt && \
+#    wget https://raw.githubusercontent.com/intel-analytics/analytics-zoo/bigdl-2.0/docker/hyperzoo/download-bigdl.sh && \
+#    chmod a+x ./download-bigdl.sh && \
+#    ./download-bigdl.sh && \
+#    rm bigdl*.zip && \
+#    rm $BIGDL_HOME/jars/bigdl-*
 
+ADD ./bigdl-$BIGDL_VERSION /opt
 # Copy scripts & other files
 ADD ./run_spark_on_occlum_glibc.sh /opt/run_spark_on_occlum_glibc.sh
 ADD target/xgboostsparksgx-1.0-SNAPSHOT.jar $BIGDL_HOME/jars/
