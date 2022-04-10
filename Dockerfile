@@ -76,8 +76,7 @@ RUN cd /opt && \
     wget https://raw.githubusercontent.com/intel-analytics/analytics-zoo/bigdl-2.0/docker/hyperzoo/download-bigdl.sh && \
     chmod a+x ./download-bigdl.sh && \
     ./download-bigdl.sh && \
-    rm bigdl*.zip && \
-    rm $BIGDL_HOME/jars/bigdl-*
+    rm bigdl*.zip
 
 #ADD ./bigdl-$BIGDL_VERSION /opt
 # Copy scripts & other files
