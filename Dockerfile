@@ -1,16 +1,11 @@
 ARG SPARK_VERSION=3.1.2
-ARG HADOOP_VERSION=3.2.0
 
 FROM krallin/ubuntu-tini AS tini
 
 FROM ubuntu:20.04 as bigdl
 
 ARG SPARK_VERSION
-ARG HADOOP_VERSION
-ARG SPARK_SCALA_VERSION=2.12
-ENV HADOOP_VERSION=${HADOOP_VERSION}
 ENV SPARK_VERSION=${SPARK_VERSION}
-ENV SPARK_SCALA_VERSION=${SPARK_SCALA_VERSION}
 ENV SPARK_HOME=/opt/spark
 
 ARG SPARK_JAR_REPO_URL
@@ -27,11 +22,6 @@ RUN apt-get update && DEBIAN_FRONTEND="noninteractive" apt-get install -y --no-i
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
-# maven
-RUN cd /opt && \
-    wget https://archive.apache.org/dist/maven/maven-3/3.6.3/binaries/apache-maven-3.6.3-bin.tar.gz && \
-    tar -zxvf apache-maven-3.6.3-bin.tar.gz
-
 # spark
 # TODO change to build from source instead of download from spark binary
 RUN cd /opt && \
@@ -43,9 +33,7 @@ RUN cd /opt && \
     echo $'\nlog4j.logger.io.netty=ERROR' >> spark/conf/log4j.properties && \
     rm spark/jars/spark-core_2.12-$SPARK_VERSION.jar && \
     rm spark/jars/spark-kubernetes_2.12-$SPARK_VERSION.jar && \
-    rm spark/jars/spark-network-common_2.12-$SPARK_VERSION.jar && \
-    rm spark/jars/hadoop-common-3.2.0.jar && \
-    rm spark/jars/hive-exec-2.3.7-core.jar
+    rm spark/jars/spark-network-common_2.12-$SPARK_VERSION.jar
 
 # spark modification
 RUN cd /opt && \
@@ -56,42 +44,11 @@ RUN cd /opt && \
     mv /opt/spark-kubernetes_2.12-$SPARK_VERSION.jar /opt/spark/jars/spark-kubernetes_2.12-$SPARK_VERSION.jar && \
     mv /opt/spark-network-common_2.12-$SPARK_VERSION.jar /opt/spark/jars/spark-network-common_2.12-$SPARK_VERSION.jar
 
-RUN mkdir -p /opt/src
-
-# hadoop
-RUN cd /opt/src && \
-    wget https://github.com/protocolbuffers/protobuf/releases/download/v2.5.0/protobuf-2.5.0.tar.bz2 && \
-    tar jxvf protobuf-2.5.0.tar.bz2 && \
-    cd protobuf-2.5.0 && \
-    ./configure && \
-    make && \
-    make check && \
-    export LD_LIBRARY_PATH=/usr/local/lib && \
-    make install && \
-    rm -f protobuf-2.5.0.tar.bz2 && \
-    cd /opt/src && \
-    git clone https://github.com/analytics-zoo/hadoop.git && \
-    cd hadoop && \
-    git checkout branch-3.2.0-ppml && \
-    cd hadoop-common-project/hadoop-common && \
-    export MAVEN_OPTS="-Xmx2g -XX:ReservedCodeCacheSize=512m \
-        -Dhttp.proxyHost=$HTTP_PROXY_HOST \
-        -Dhttp.proxyPort=$HTTP_PROXY_PORT \
-        -Dhttps.proxyHost=$HTTPS_PROXY_HOST \
-        -Dhttps.proxyPort=$HTTPS_PROXY_PORT" && \
-    /opt/apache-maven-3.6.3/bin/mvn -T 16 -DskipTests=true clean package
-
-# Remove fork with libhadoop.so and spark-network-common.jar
-RUN wget https://sourceforge.net/projects/analytics-zoo/files/analytics-zoo-data/libhadoop.so -P /opt/ && \
-    cp -f /opt/src/hadoop/hadoop-common-project/hadoop-common/target/hadoop-common-${HADOOP_VERSION}.jar ${SPARK_HOME}/jars && \
-    rm -rf /opt/src
 
 FROM occlum/occlum:0.27.0-ubuntu20.04 as ppml
 
 ARG BIGDL_VERSION=2.1.0-SNAPSHOT
 ARG SPARK_VERSION
-ARG HADOOP_VERSION
-ENV HADOOP_VERSION=${HADOOP_VERSION}
 ENV SPARK_VERSION=${SPARK_VERSION}
 ENV SPARK_HOME=/opt/spark
 ENV BIGDL_VERSION=${BIGDL_VERSION}
@@ -116,7 +73,6 @@ RUN apt-get update && \
 
 # prepare Spark
 COPY --from=bigdl /opt/spark /opt/spark
-COPY --from=bigdl /opt/libhadoop.so /opt/libhadoop.so
 
 # Prepare BigDL
 RUN cd /opt && \
