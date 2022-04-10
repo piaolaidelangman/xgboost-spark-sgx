@@ -43,7 +43,7 @@ RUN cd /opt && \
     echo $'\nlog4j.logger.io.netty=ERROR' >> spark/conf/log4j.properties && \
     rm spark/jars/spark-core_2.12-$SPARK_VERSION.jar && \
     rm spark/jars/spark-kubernetes_2.12-$SPARK_VERSION.jar && \
-    rm spark/jars/spark-network-common_2.12-$SPARK_VERSION.jar \
+    rm spark/jars/spark-network-common_2.12-$SPARK_VERSION.jar
 
 # spark modification
 RUN cd /opt && \
