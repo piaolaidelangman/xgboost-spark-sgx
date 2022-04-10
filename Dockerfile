@@ -75,7 +75,7 @@ COPY --from=bigdl /opt/spark /opt/spark
 #    chmod a+x ./download-bigdl.sh && \
 #    ./download-bigdl.sh && \
 #    rm bigdl*.zip
-RUN mkdir /opt/$BIGDL_HOME && mkdir /opt/$BIGDL_HOME/jars
+RUN mkdir $BIGDL_HOME && mkdir $BIGDL_HOME/jars
 
 # Copy scripts & other files
 #ADD ./bigdl-2.1.0-SNAPSHOT /opt
