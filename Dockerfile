@@ -89,7 +89,7 @@ RUN cd /opt && \
 # Copy scripts & other files
 ADD ./run_spark_on_occlum_glibc.sh /opt/run_spark_on_occlum_glibc.sh
 #ADD target/xgboostsparksgx-1.0-SNAPSHOT.jar $BIGDL_HOME/jars/
-ADD target/xgboostsparksgx-1.0-SNAPSHOT-jar-with-dependencies.jar /opt
+ADD target/xgboostsparksgx-1.0-SNAPSHOT-jar-with-dependencies.jar $BIGDL_HOME/jars/
 COPY ./entrypoint.sh /opt/
 
 
