@@ -82,13 +82,16 @@ RUN cd /opt && \
     rm $BIGDL_HOME/jars/bigdl-orca-spark_3.1.2-2.1.0-SNAPSHOT.jar && \
     rm $BIGDL_HOME/jars/bigdl-ppml-spark_3.1.2-2.1.0-SNAPSHOT.jar && \
     rm $BIGDL_HOME/jars/bigdl-serving-spark_3.1.2-2.1.0-SNAPSHOT.jar && \
-    rm $BIGDL_HOME/jars/bigdl-dllib-spark_3.1.2-2.1.0-SNAPSHOT.jar
+    rm $BIGDL_HOME/jars/bigdl-dllib-spark_3.1.2-2.1.0-SNAPSHOT.jar && \
+    rm $BIGDL_HOME/jars/*
 
 #ADD ./bigdl-$BIGDL_VERSION /opt
 # Copy scripts & other files
 ADD ./run_spark_on_occlum_glibc.sh /opt/run_spark_on_occlum_glibc.sh
-ADD target/xgboostsparksgx-1.0-SNAPSHOT.jar $BIGDL_HOME/jars/
+#ADD target/xgboostsparksgx-1.0-SNAPSHOT.jar $BIGDL_HOME/jars/
+ADD target/xgboostsparksgx-1.0-SNAPSHOT-jar-with-dependencies.jar /opt
 COPY ./entrypoint.sh /opt/
+
 
 RUN chmod a+x /opt/entrypoint.sh && \
     chmod a+x /opt/run_spark_on_occlum_glibc.sh
