@@ -30,10 +30,7 @@ RUN cd /opt && \
     mv spark-${SPARK_VERSION}-bin-hadoop3.2 spark && \
     rm spark-${SPARK_VERSION}-bin-hadoop3.2.tgz && \
     cp spark/conf/log4j.properties.template spark/conf/log4j.properties && \
-    echo $'\nlog4j.logger.io.netty=ERROR' >> spark/conf/log4j.properties && \
-    rm spark/jars/spark-core_2.12-$SPARK_VERSION.jar && \
-    rm spark/jars/spark-kubernetes_2.12-$SPARK_VERSION.jar && \
-    rm spark/jars/spark-network-common_2.12-$SPARK_VERSION.jar
+    echo $'\nlog4j.logger.io.netty=ERROR' >> spark/conf/log4j.properties
 
 # spark modification
 RUN cd /opt && \
@@ -79,13 +76,22 @@ RUN cd /opt && \
     wget https://raw.githubusercontent.com/intel-analytics/analytics-zoo/bigdl-2.0/docker/hyperzoo/download-bigdl.sh && \
     chmod a+x ./download-bigdl.sh && \
     ./download-bigdl.sh && \
-    rm bigdl*.zip
+    rm bigdl*.zip && \
+    rm $BIGDL_HOME/jars/bigdl-friesian-spark_3.1.2-2.1.0-SNAPSHOT.jar && \
+    rm $BIGDL_HOME/jars/bigdl-grpc-spark_3.1.2-2.1.0-SNAPSHOT.jar && \
+    rm $BIGDL_HOME/jars/bigdl-orca-spark_3.1.2-2.1.0-SNAPSHOT.jar && \
+    rm $BIGDL_HOME/jars/bigdl-ppml-spark_3.1.2-2.1.0-SNAPSHOT.jar && \
+    rm $BIGDL_HOME/jars/bigdl-serving-spark_3.1.2-2.1.0-SNAPSHOT.jar && \
+    rm $BIGDL_HOME/jars/bigdl-dllib-spark_3.1.2-2.1.0-SNAPSHOT.jar && \
+    rm $BIGDL_HOME/jars/*
 
+#ADD ./bigdl-$BIGDL_VERSION /opt
 # Copy scripts & other files
 ADD ./run_spark_on_occlum_glibc.sh /opt/run_spark_on_occlum_glibc.sh
-#ADD target/xgboostsparksgx-1.0-SNAPSHOT-jar-with-dependencies.jar $BIGDL_HOME/jars/
-ADD target/xgboostsparksgx-1.0-SNAPSHOT.jar $BIGDL_HOME/jars/
+#ADD target/xgboostsparksgx-1.0-SNAPSHOT.jar $BIGDL_HOME/jars/
+ADD target/xgboostsparksgx-1.0-SNAPSHOT-jar-with-dependencies.jar $BIGDL_HOME/jars/
 COPY ./entrypoint.sh /opt/
+
 
 RUN chmod a+x /opt/entrypoint.sh && \
     chmod a+x /opt/run_spark_on_occlum_glibc.sh
