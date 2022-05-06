@@ -8,6 +8,11 @@
   <name>xgboostsparksgx</name>
   <packaging>jar</packaging>
 
+  <properties>
+    <log4j.version>2.17.1</log4j.version>
+    <serving.scope>compile</serving.scope>
+  </properties>
+
   <dependencies>
   <dependency>
     <groupId>org.apache.spark</groupId>
@@ -24,7 +29,30 @@
       <artifactId>xgboost4j-spark_2.12</artifactId>
       <version>1.5.2</version>
   </dependency>
-
+  <dependency>
+    <groupId>org.apache.logging.log4j</groupId>
+    <artifactId>log4j-api</artifactId>
+    <version>${log4j.version}</version>
+    <scope>${serving.scope}</scope>
+  </dependency>
+  <dependency>
+    <groupId>org.apache.logging.log4j</groupId>
+    <artifactId>log4j-slf4j-impl</artifactId>
+    <version>${log4j.version}</version>
+    <scope>${serving.scope}</scope>
+  </dependency>
+  <dependency>
+    <groupId>org.apache.logging.log4j</groupId>
+    <artifactId>log4j-core</artifactId>
+    <version>${log4j.version}</version>
+    <scope>${serving.scope}</scope>
+  </dependency>
+  <dependency>
+    <groupId>org.apache.logging.log4j</groupId>
+    <artifactId>log4j-1.2-api</artifactId>
+    <version>${log4j.version}</version>
+    <scope>${serving.scope}</scope>
+  </dependency>
   </dependencies>
 
   <build>

@@ -6,6 +6,7 @@ import org.apache.spark.SparkContext
 import org.apache.spark.ml.feature.{StringIndexer, VectorAssembler}
 import org.apache.spark.sql.{SparkSession, Row}
 import org.apache.spark.sql.types.{IntegerType, StructField, StructType, LongType}
+import org.slf4j.LoggerFactory
 /**
  * @author diankun.an
  */
@@ -13,6 +14,7 @@ object xgbClassifierTrainingExample {
 
   def main(args: Array[String]): Unit = {
 
+    val logger = LoggerFactory.getLogger(getClass)
     val spark = SparkSession.builder().getOrCreate()
     import spark.implicits._
 
@@ -22,11 +24,18 @@ object xgbClassifierTrainingExample {
     val modelsave_path = args(2) // save model to this path
     val secret = args(3)
     val num_workers = args(4).toInt
+    val val_data_path = args(5)
 
-    var decryption = spark.sparkContext.binaryFiles(input_path)
+    val tmpData = spark.sparkContext.binaryFiles(input_path)
+    var begin = System.currentTimeMillis
+    var decryption = tmpData
       .map{ case (name, bytesData) => {
         task.decryptBytesWithJavaAESCBC(bytesData.toArray, secret)
       }}
+    var end = System.currentTimeMillis
+    var cost = (end - begin)
+    logger.info(s"Spark decrypt data time elapsed $cost ms.")
+
     val decryptionRDD = decryption.flatMap(_.split("\n"))
     // decryptionRDD.foreach(println)
     val columns = decryptionRDD.first.split(",").length
@@ -97,9 +106,47 @@ object xgbClassifierTrainingExample {
     xgbClassifier.setObjective("multi:softprob")
     xgbClassifier.setTimeoutRequestWorkers(180000L)
 
+    begin = System.currentTimeMillis
     val xgbClassificationModel = xgbClassifier.fit(train)
-    xgbClassificationModel.save(modelsave_path)
+    end = System.currentTimeMillis
+    cost = (end - begin)
+    logger.info(s"Spark XGBoost training time elapsed $cost ms.")
 
+////////////////// Predict
+    val valDecryption = spark.sparkContext.binaryFiles(input_path)
+      .map{ case (name, bytesData) => {
+        task.decryptBytesWithJavaAESCBC(bytesData.toArray, secret)
+      }}
+
+    val valDecryptionRDD = valDecryption.flatMap(_.split("\n"))
+    // decryptionRDD.foreach(println)
+    val valColumns = valDecryptionRDD.first.split(",").length
+
+    var valStructFieldArray = new Array[StructField](valColumns)
+    for(i <- 0 to valColumns-1){
+      valStructFieldArray(i) = StructField("_c" + i.toString, LongType, true)
+    }
+    var valSchema =  new StructType(valStructFieldArray)
+
+
+    val valRowRDD = valDecryptionRDD.map(_.split(",")).map(row => Row.fromSeq(
+      for{
+        i <- 0 to columns-1
+      } yield {
+        // if(i<14) row(i).toInt else row(i).toLong
+        row(i).toLong
+      }
+    ))
+
+    val valDf = spark.createDataFrame(valRowRDD,valSchema).repartition(2)
+    val featureArray = new Array[String](valColumns-1)
+    for(i <- 1 to valColumns-1){
+      featureArray(i-1) = "_c" + i.toString
+    }
+    xgbClassificationModel.setFeaturesCol(featureArray)
+    val result = xgbClassificationModel.transform(valDf)
+    result.show()
+/////////////
     spark.stop()
   }
 }
