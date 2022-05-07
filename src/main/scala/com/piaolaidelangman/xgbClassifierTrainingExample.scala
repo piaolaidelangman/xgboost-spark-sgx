@@ -21,14 +21,13 @@ object xgbClassifierTrainingExample {
     val task = new Task()
     val input_path = args(0) // path to iris.data
     val num_threads = args(1).toInt
-    val modelsave_path = args(2) // save model to this path
-    val secret = args(3)
-    val num_workers = args(4).toInt
-    val val_data_path = args(5)
+    val secret = args(2)
+    val num_workers = args(3).toInt
+    val val_data_path = args(4)
 
     val tmpData = spark.sparkContext.binaryFiles(input_path)
     var begin = System.currentTimeMillis
-    var decryption = tmpData
+    val decryption = tmpData
       .map{ case (name, bytesData) => {
         task.decryptBytesWithJavaAESCBC(bytesData.toArray, secret)
       }}
@@ -40,12 +39,12 @@ object xgbClassifierTrainingExample {
     // decryptionRDD.foreach(println)
     val columns = decryptionRDD.first.split(",").length
 
-    var structFieldArray = new Array[StructField](columns)
+    val structFieldArray = new Array[StructField](columns)
     for(i <- 0 to columns-1){
       // structFieldArray(i) = StructField("_c" + i.toString, if(i<14) IntegerType else LongType, true)
       structFieldArray(i) = StructField("_c" + i.toString, LongType, true)
     }
-    var schema =  new StructType(structFieldArray)
+    val schema =  new StructType(structFieldArray)
   
 
     val rowRDD = decryptionRDD.map(_.split(",")).map(row => Row.fromSeq(
@@ -57,12 +56,11 @@ object xgbClassifierTrainingExample {
       }
     ))
 
-    val df = spark.createDataFrame(rowRDD,schema).repartition(2)
+    val df = spark.createDataFrame(rowRDD,schema)
     //val df = spark.read.format("csv").option("inferSchema",true).option("header",false).option("delimiter","\t").load(input_path)
-    df.show()
-
-    df.cache()
-    df.printSchema()
+//    df.show()
+//    df.cache()
+//    df.printSchema()
 
     val stringIndexer = new StringIndexer()
       .setInputCol("_c0")
@@ -71,7 +69,7 @@ object xgbClassifierTrainingExample {
     val labelTransformed = stringIndexer.transform(df).drop("_c0")
 
     //val columns=40
-    var inputCols = new Array[String](columns-1)
+    val inputCols = new Array[String](columns-1)
     for(i <- 0 to columns-2){
       inputCols(i) = "_c" + (i+1).toString
     }
@@ -115,7 +113,7 @@ object xgbClassifierTrainingExample {
     logger.info(s"Spark XGBoost training time elapsed $cost ms.")
 
 ////////////////// Predict
-    val valDecryption = spark.sparkContext.binaryFiles(input_path)
+    val valDecryption = spark.sparkContext.binaryFiles(val_data_path)
       .map{ case (name, bytesData) => {
         task.decryptBytesWithJavaAESCBC(bytesData.toArray, secret)
       }}
