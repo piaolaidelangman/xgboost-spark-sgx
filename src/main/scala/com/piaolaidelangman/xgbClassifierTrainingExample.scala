@@ -60,7 +60,7 @@ object xgbClassifierTrainingExample {
     val df = spark.createDataFrame(rowRDD,schema).repartition(2)
     //val df = spark.read.format("csv").option("inferSchema",true).option("header",false).option("delimiter","\t").load(input_path)
     df.show()
-    df.cache()
+//    df.cache()
     df.printSchema()
 
     val stringIndexer = new StringIndexer()
