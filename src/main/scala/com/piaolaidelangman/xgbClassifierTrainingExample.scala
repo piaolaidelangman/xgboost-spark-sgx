@@ -34,7 +34,7 @@ object xgbClassifierTrainingExample {
       }}
     var end = System.currentTimeMillis
     var cost = (end - begin)
-    logger.info(s"Spark decrypt data time elapsed $cost ms.")
+    logger.info(s"SUCCESS Spark decrypt data time elapsed $cost ms.")
 
     val decryptionRDD = decryption.flatMap(_.split("\n"))
     // decryptionRDD.foreach(println)
@@ -60,6 +60,7 @@ object xgbClassifierTrainingExample {
     val df = spark.createDataFrame(rowRDD,schema).repartition(2)
     //val df = spark.read.format("csv").option("inferSchema",true).option("header",false).option("delimiter","\t").load(input_path)
     df.show()
+    df.cache()
     df.printSchema()
 
     val stringIndexer = new StringIndexer()
