@@ -30,7 +30,7 @@ object xgbClassifierTrainingExample {
     val decryption = tmpData
       .map{ case (name, bytesData) => {
         task.decryptBytesWithJavaAESCBC(bytesData.toArray, secret)
-      }}
+      }}.cache()
     var end = System.currentTimeMillis
     var cost = (end - begin)
     logger.info(s"SUCCESS Spark decrypt data time elapsed $cost ms.")
@@ -56,7 +56,7 @@ object xgbClassifierTrainingExample {
       }
     ))
 
-    val df = spark.createDataFrame(rowRDD,schema)
+    val df = spark.createDataFrame(rowRDD,schema).cache()
     //val df = spark.read.format("csv").option("inferSchema",true).option("header",false).option("delimiter","\t").load(input_path)
 //    df.show()
 //    df.cache()
