@@ -95,7 +95,7 @@ object xgbClassifierTrainingExample extends Supportive{
     xgbClassifier.setNthread(num_threads)
     xgbClassifier.setNumRound(10)
     xgbClassifier.setTreeMethod("auto")
-    xgbClassifier.setObjective("multi:soft-prob")
+    xgbClassifier.setObjective("multi:softprob")
     xgbClassifier.setTimeoutRequestWorkers(180000L)
 
     val xgbClassificationModel = timing("XGBoost Training ") {
