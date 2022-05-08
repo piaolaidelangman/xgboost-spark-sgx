@@ -27,7 +27,7 @@
   <dependency>
       <groupId>ml.dmlc</groupId>
       <artifactId>xgboost4j-spark_2.12</artifactId>
-      <version>1.5.2</version>
+      <version>1.5.0</version>
   </dependency>
   <dependency>
     <groupId>org.apache.logging.log4j</groupId>
