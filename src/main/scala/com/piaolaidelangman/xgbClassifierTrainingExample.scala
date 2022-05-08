@@ -12,7 +12,7 @@ import org.apache.spark.sql.types.{IntegerType, StructField, StructType, LongTyp
 object xgbClassifierTrainingExample extends Supportive{
  def rddToDf(rdd: RDD[String], spark: SparkSession): DataFrame = {
    val decryptionRDD = rdd.flatMap(_.split("\n"))
-   val columns = decryptionRDD.first.split(",").length
+   val columns = 40
 
    val structFieldArray = new Array[StructField](columns)
    for(i <- 0 to columns-1){
@@ -20,7 +20,6 @@ object xgbClassifierTrainingExample extends Supportive{
      structFieldArray(i) = StructField("_c" + i.toString, LongType, true)
    }
    val schema =  new StructType(structFieldArray)
-
 
    val rowRDD = decryptionRDD.map(_.split(",")).map(row => Row.fromSeq(
      for{
@@ -92,11 +91,11 @@ object xgbClassifierTrainingExample extends Supportive{
     xgbClassifier.setLabelCol("classIndex")
     xgbClassifier.setNumClass(2)
     xgbClassifier.setNumWorkers(num_workers)
-    xgbClassifier.setMaxDepth(2)
+    xgbClassifier.setMaxDepth(4)
     xgbClassifier.setNthread(num_threads)
     xgbClassifier.setNumRound(10)
     xgbClassifier.setTreeMethod("auto")
-    xgbClassifier.setObjective("multi:softprob")
+    xgbClassifier.setObjective("multi:soft-prob")
     xgbClassifier.setTimeoutRequestWorkers(180000L)
 
     val xgbClassificationModel = timing("XGBoost Training ") {
