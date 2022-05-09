@@ -2,10 +2,11 @@ package xgboostsparksgx
 
 import java.util.Arrays.copyOfRange
 import java.time.Instant
-import java.io.{ByteArrayOutputStream, DataOutputStream, ByteArrayInputStream, DataInputStream}
+import java.io.{ByteArrayInputStream, ByteArrayOutputStream, DataInputStream, DataOutputStream}
 import java.security.SecureRandom
-import javax.crypto.{Cipher, SecretKeyFactory, Mac}
+import javax.crypto.{Cipher, Mac, SecretKeyFactory}
 import javax.crypto.spec.{IvParameterSpec, SecretKeySpec}
+import org.slf4j.LoggerFactory
 /**
  * @author diankun.an
  */
@@ -70,6 +71,8 @@ class Task extends Serializable{
   }
 
   def decryptBytesWithJavaAESCBC(content: Array[Byte], key: String): String = {
+    val logger = LoggerFactory.getLogger(getClass)
+    logger.info("SUCCESS Enter decrypt!!!")
     val secret = key.getBytes
 
     val inputStream: ByteArrayInputStream = new ByteArrayInputStream(content)
